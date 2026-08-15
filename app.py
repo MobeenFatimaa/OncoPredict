@@ -9,28 +9,37 @@ warnings.filterwarnings('ignore', category=UserWarning)
 
 app = Flask(__name__)
 
-MODEL_PATH = 'breast_cancer_model_pipeline_clean.pkl'
+# Dynamically construct absolute path to model artifact for serverless deployment (e.g., Vercel)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, 'breast_cancer_model_pipeline_clean.pkl')
+
+pipeline_model = None
 
 try:
-    loaded_artifact = joblib.load(MODEL_PATH)
-    if isinstance(loaded_artifact, dict):
-        pipeline_model = loaded_artifact.get('model') or loaded_artifact.get('pipeline')
+    if os.path.exists(MODEL_PATH):
+        loaded_artifact = joblib.load(MODEL_PATH)
+        if isinstance(loaded_artifact, dict):
+            pipeline_model = loaded_artifact.get('model') or loaded_artifact.get('pipeline')
+        else:
+            pipeline_model = loaded_artifact
+        print(f"\n[DEBUG] Model loaded successfully from: {MODEL_PATH}\n")
     else:
-        pipeline_model = loaded_artifact
-    print("\n[DEBUG] Model loaded successfully!\n")
+        print(f"\n[ERROR] Model file not found at path: {MODEL_PATH}")
+        print(f"[DEBUG] Files present in directory: {os.listdir(BASE_DIR)}\n")
 except Exception as e:
     print(f"[ERROR] Failed to load model artifact: {e}")
     pipeline_model = None
 
 
 def parse_bool(val):
+    """Converts mixed string/boolean entries into boolean types."""
     if isinstance(val, bool):
         return val
     return str(val).strip().lower() in ['true', '1', 'yes']
 
 
 def parse_blood_pressure(val):
-    """Converts blood pressure string entries into floats to prevent median imputer crashes."""
+    """Converts blood pressure string entries into numeric floats to prevent transformer crashes."""
     s_val = str(val).strip().lower()
     if s_val in ['normal', 'low', 'optimum']:
         return 120.0
@@ -53,11 +62,11 @@ def run_model_inference():
     if pipeline_model is None or (callable(pipeline_model) and not hasattr(pipeline_model, 'predict')):
         return jsonify({
             'status': 'error', 
-            'message': 'Loaded model pipeline is invalid or not loaded.'
+            'message': f'Loaded model pipeline is invalid or not loaded. Checked path: {MODEL_PATH}'
         }), 500
 
     try:
-        data = request.get_json()
+        data = request.get_json() or {}
 
         # Build raw dictionary explicitly aligned with pipeline transformers
         input_data = {
