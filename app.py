@@ -9,7 +9,7 @@ warnings.filterwarnings('ignore', category=UserWarning)
 
 app = Flask(__name__)
 
-# Dynamically construct absolute path to model artifact for serverless deployment (e.g., Vercel)
+# Dynamically construct absolute path to model artifact for Vercel Serverless environment
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, 'breast_cancer_model_pipeline_clean.pkl')
 
@@ -25,9 +25,9 @@ try:
         print(f"\n[DEBUG] Model loaded successfully from: {MODEL_PATH}\n")
     else:
         print(f"\n[ERROR] Model file not found at path: {MODEL_PATH}")
-        print(f"[DEBUG] Files present in directory: {os.listdir(BASE_DIR)}\n")
+        print(f"[DEBUG] Files present in BASE_DIR ({BASE_DIR}): {os.listdir(BASE_DIR)}\n")
 except Exception as e:
-    print(f"[ERROR] Failed to load model artifact: {e}")
+    print(f"\n[ERROR] Failed to load model artifact: {e}\n")
     pipeline_model = None
 
 
