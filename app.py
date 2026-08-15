@@ -9,11 +9,11 @@ warnings.filterwarnings('ignore', category=UserWarning)
 
 app = Flask(__name__)
 
-# Dynamically construct absolute path to model artifact for Vercel Serverless environment
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, 'breast_cancer_model_pipeline_clean.pkl')
 
 pipeline_model = None
+load_error_message = None
 
 try:
     if os.path.exists(MODEL_PATH):
@@ -24,32 +24,30 @@ try:
             pipeline_model = loaded_artifact
         print(f"\n[DEBUG] Model loaded successfully from: {MODEL_PATH}\n")
     else:
-        print(f"\n[ERROR] Model file not found at path: {MODEL_PATH}")
-        print(f"[DEBUG] Files present in BASE_DIR ({BASE_DIR}): {os.listdir(BASE_DIR)}\n")
+        load_error_message = f"File not found at {MODEL_PATH}. Directory contains: {os.listdir(BASE_DIR)}"
+        print(f"[ERROR] {load_error_message}")
 except Exception as e:
-    print(f"\n[ERROR] Failed to load model artifact: {e}\n")
+    load_error_message = f"Unpickling exception: {str(e)}"
+    print(f"[ERROR] {load_error_message}")
     pipeline_model = None
 
 
 def parse_bool(val):
-    """Converts mixed string/boolean entries into boolean types."""
     if isinstance(val, bool):
         return val
     return str(val).strip().lower() in ['true', '1', 'yes']
 
 
 def parse_blood_pressure(val):
-    """Converts blood pressure string entries into numeric floats to prevent transformer crashes."""
     s_val = str(val).strip().lower()
     if s_val in ['normal', 'low', 'optimum']:
         return 120.0
     elif s_val in ['high', 'hypertension', 'elevated']:
         return 140.0
-    
     try:
         return float(val)
     except (ValueError, TypeError):
-        return 120.0  # Default safe fallback value
+        return 120.0
 
 
 @app.route('/')
@@ -62,15 +60,13 @@ def run_model_inference():
     if pipeline_model is None or (callable(pipeline_model) and not hasattr(pipeline_model, 'predict')):
         return jsonify({
             'status': 'error', 
-            'message': f'Loaded model pipeline is invalid or not loaded. Checked path: {MODEL_PATH}'
+            'message': f'Model failed to load. Details: {load_error_message}'
         }), 500
 
     try:
         data = request.get_json() or {}
 
-        # Build raw dictionary explicitly aligned with pipeline transformers
         input_data = {
-            # Numeric Features (Matching 'num' ColumnTransformer)
             'Age': float(data.get('Age', 50)),
             'BMI': float(data.get('BMI', 25.0)),
             'Tumor_Size_cm': float(data.get('Tumor_Size_cm', 2.0)),
@@ -78,8 +74,6 @@ def run_model_inference():
             'Cholesterol': float(data.get('Cholesterol', 200.0)),
             'Exercise_Days_Per_Week': float(data.get('Exercise_Days_Per_Week', 3)),
             'Annual_Income_USD': float(data.get('Annual_Income_USD', 50000.0)),
-
-            # Categorical Features (Matching 'cat' ColumnTransformer)
             'Gender': str(data.get('Gender', 'Female')),
             'Family_History': parse_bool(data.get('Family_History')),
             'Smoking': parse_bool(data.get('Smoking')),
@@ -95,7 +89,6 @@ def run_model_inference():
 
         input_df = pd.DataFrame([input_data])
 
-        # Run inference through pipeline
         prediction = int(pipeline_model.predict(input_df)[0])
         probability = float(pipeline_model.predict_proba(input_df)[0][1])
 
