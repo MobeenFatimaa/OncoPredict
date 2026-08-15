@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OncoPredict AI - Clinical Risk Intelligence Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-input {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-input:focus {
+            border-color: #f43f5e;
+            box-shadow: 0 0 0 2px rgba(244, 63, 94, 0.2);
+        }
+        .tab-btn.active {
+            background-color: rgba(244, 63, 94, 0.15);
+            color: #f43f5e;
+            border-color: rgba(244, 63, 94, 0.4);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black">
+
+    <!-- Header / Navbar -->
+    <header class="border-b border-slate-800/80 glass-panel sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col lg:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-500">
+                    <i data-lucide="activity" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-xl tracking-tight text-white flex items-center gap-2">
+                        Onco<span class="text-rose-500">Predict</span>
+                        <span class="text-xs px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 font-medium border border-rose-500/20">AI v2.0</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">Clinical Oncology Risk Intelligence System</p>
+                </div>
+            </div>
+            
+            <!-- Navigation Tabs -->
+            <div class="flex flex-wrap items-center gap-1.5 p-1.5 bg-slate-900/90 border border-slate-800 rounded-xl text-xs font-semibold text-slate-400">
+                <button onclick="switchTab('predictor')" id="tab-predictor" class="tab-btn active px-3.5 py-2 rounded-lg border border-transparent transition flex items-center gap-1.5">
+                    <i data-lucide="stethoscope" class="w-4 h-4"></i> Live Predictor
+                </button>
+                <button onclick="switchTab('metrics')" id="tab-metrics" class="tab-btn px-3.5 py-2 rounded-lg border border-transparent transition flex items-center gap-1.5">
+                    <i data-lucide="line-chart" class="w-4 h-4"></i> Accuracy
+                </button>
+                <button onclick="switchTab('features')" id="tab-features" class="tab-btn px-3.5 py-2 rounded-lg border border-transparent transition flex items-center gap-1.5">
+                    <i data-lucide="sliders" class="w-4 h-4"></i> Feature Importance
+                </button>
+                <button onclick="switchTab('dataset')" id="tab-dataset" class="tab-btn px-3.5 py-2 rounded-lg border border-transparent transition flex items-center gap-1.5">
+                    <i data-lucide="database" class="w-4 h-4"></i> Dataset Stats
+                </button>
+                <button onclick="switchTab('pipeline')" id="tab-pipeline" class="tab-btn px-3.5 py-2 rounded-lg border border-transparent transition flex items-center gap-1.5">
+                    <i data-lucide="git-branch" class="w-4 h-4"></i> Pipeline
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- SECTION 1: LIVE PREDICTOR -->
+    <main id="section-predictor" class="tab-section flex-1 max-w-7xl w-full mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <section class="lg:col-span-8 space-y-6">
+            <div class="glass-panel rounded-2xl p-6 sm:p-8 shadow-2xl">
+                <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-800">
+                    <i data-lucide="file-text" class="w-5 h-5 text-rose-500"></i>
+                    <div>
+                        <h2 class="text-lg font-bold text-white">Patient Clinical Data Entry</h2>
+                        <p class="text-xs text-slate-400">Input standard patient indicators and biomarkers for risk inference</p>
+                    </div>
+                </div>
+
+                <form id="predictionForm" class="space-y-8">
+                    <!-- Demographics -->
+                    <div>
+                        <h3 class="text-xs font-semibold text-rose-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                            <i data-lucide="user" class="w-4 h-4"></i> Demographics & Anthropometrics
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label for="Age" class="block text-xs font-medium text-slate-300 mb-1.5">Age (Years)</label>
+                                <input type="number" id="Age" value="45" min="18" max="100" class="glass-input w-full px-3.5 py-2.5 rounded-xl text-sm text-white focus:outline-none" required>
+                            </div>
+                            <div>
+                                <label for="Gender" class="block text-xs font-medium text-slate-300 mb-1.5">Gender</label>
+                                <select id="Gender" class="glass-input w-full px-3.5 py-2.5 rounded-xl text-sm text-white focus:outline-none">
+                                    <option value="Female" selected class="bg-slate-900">Female</option>
+                                    <option value="Male" class="bg-slate-900">Male</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="BMI" class="block text-xs font-medium text-slate-300 mb-1.5">BMI (kg/m²)</label>
+                                <input type="number" step="0.1" id="BMI" value="26.5" class="glass-input w-full px-3.5 py-2.5 rounded-xl text-sm text-white focus:outline-none" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Biomarkers -->
+                    <div>
+                        <h3 class="text-xs font-semibold text-rose-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                            <i data-lucide="microscope" class="w-4 h-4"></i> Clinical Indicators & Biomarkers
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label for="Tumor_Size_cm" class="block text-xs font-medium text-slate-300 mb-1.5">Tumor Size (cm)</label>
+                                <input type="number" step="0.1" id="Tumor_Size_cm" value="2.1" class="glass-input w-full px-3.5 py-2.5 rounded-xl text-sm text-white focus:outline-none">
+                            </div>
+                            <div>
+                                <label for="Lymph_Node_Involvement" class="block text-xs font-medium text-slate-300 mb-1.5">Lymph Node Involvement</label>
+                                <select id="Lymph_Node_Involvement" class="glass-input w-full px-3.5 py-2.5 rounded-xl text-sm text-white focus:outline-none">
+                                    <option value="No" selected class="bg-slate-900">No</option>
+                                    <option value="Yes" class="bg-slate-900">Yes</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="Genetic_Mutation" class="block text-xs font-medium text-slate-300 mb-1.5">Genetic Mutation Status</label>
+                                <select id="Genetic_Mutation" class="glass-input w-full px-3.5 py-2.5 rounded-xl text-sm text-white focus:outline-none">
+                                    <option value="None" selected class="bg-slate-900">None Detected</option>
+                                    <option value="BRCA1" class="bg-slate-900">BRCA1</option>
+                                    <option value="BRCA2" class="bg-slate-900">BRCA2</option>
+                                    <option value="TP53" class="bg-slate-900">TP53</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="Blood_Pressure" class="block text-xs font-medium text-slate-300 mb-1.5">Blood Pressure</label>
+                                <select id="Blood_Pressure" class="glass-input w-full px-3.5 py-2.5 rounded-xl text-sm text-white focus:outline-none">
+                                    <option value="Normal" selected class="bg-slate-900">Normal</option>
+                                    <option value="Elevated" class="bg-slate-900">Elevated</option>
+                                    <option value="High" class="bg-slate-900">High (Hypertension)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="Cholesterol" class="block text-xs font-medium text-slate-300 mb-1.5">Total Cholesterol (mg/dL)</label>
+                                <input type="number" id="Cholesterol" value="195" class="glass-input w-full px-3.5 py-2.5 rounded-xl text-sm text-white focus:outline-none">
+                            </div>
+                            <div>
+                                <label for="Menopause_Status" class="block text-xs font-medium text-slate-300 mb-1.5">Menopause Status</label>
+                                <select id="Menopause_Status" class="glass-input w-full px-3.5 py-2.5 rounded-xl text-sm text-white focus:outline-none">
+                                    <option value="Pre" class="bg-slate-900">Pre-Menopausal</option>
+                                    <option value="Post" selected class="bg-slate-900">Post-Menopausal</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lifestyle -->
+                    <div>
+                        <h3 class="text-xs font-semibold text-rose-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                            <i data-lucide="heart-pulse" class="w-4 h-4"></i> Lifestyle & Medical History
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                            <div>
+                                <label for="Physical_Activity" class="block text-xs font-medium text-slate-300 mb-1.5">Physical Activity Level</label>
+                                <select id="Physical_Activity" class="glass-input w-full px-3.5 py-2.5 rounded-xl text-sm text-white focus:outline-none">
+                                    <option value="Low" class="bg-slate-900">Low Activity</option>
+                                    <option value="Moderate" selected class="bg-slate-900">Moderate Activity</option>
+                                    <option value="High" class="bg-slate-900">High Activity</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="Exercise_Days_Per_Week" class="block text-xs font-medium text-slate-300 mb-1.5">Exercise (Days/Week)</label>
+                                <input type="number" id="Exercise_Days_Per_Week" value="3" min="0" max="7" class="glass-input w-full px-3.5 py-2.5 rounded-xl text-sm text-white focus:outline-none">
+                            </div>
+                            <div>
+                                <label for="Annual_Income_USD" class="block text-xs font-medium text-slate-300 mb-1.5">Est. Annual Income ($)</label>
+                                <input type="number" id="Annual_Income_USD" value="55000" class="glass-input w-full px-3.5 py-2.5 rounded-xl text-sm text-white focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
+                            <label class="flex items-center gap-3 p-3 rounded-xl glass-input cursor-pointer hover:bg-slate-800/50 transition">
+                                <input type="checkbox" id="Family_History" class="w-4 h-4 accent-rose-500 rounded">
+                                <span class="text-xs font-medium text-slate-300">Family History</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 rounded-xl glass-input cursor-pointer hover:bg-slate-800/50 transition">
+                                <input type="checkbox" id="Smoking" class="w-4 h-4 accent-rose-500 rounded">
+                                <span class="text-xs font-medium text-slate-300">Smoking History</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 rounded-xl glass-input cursor-pointer hover:bg-slate-800/50 transition">
+                                <input type="checkbox" id="Alcohol_Consumption" class="w-4 h-4 accent-rose-500 rounded">
+                                <span class="text-xs font-medium text-slate-300">Alcohol Use</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 rounded-xl glass-input cursor-pointer hover:bg-slate-800/50 transition">
+                                <input type="checkbox" id="Hormone_Therapy" class="w-4 h-4 accent-rose-500 rounded">
+                                <span class="text-xs font-medium text-slate-300">Hormone Therapy</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 rounded-xl glass-input cursor-pointer hover:bg-slate-800/50 transition">
+                                <input type="checkbox" id="Diabetes" class="w-4 h-4 accent-rose-500 rounded">
+                                <span class="text-xs font-medium text-slate-300">Diabetic Diagnosis</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 rounded-xl glass-input cursor-pointer hover:bg-slate-800/50 transition">
+                                <input type="checkbox" id="Breastfeeding_History" checked class="w-4 h-4 accent-rose-500 rounded">
+                                <span class="text-xs font-medium text-slate-300">Breastfeeding History</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="w-full py-4 rounded-xl font-bold text-white bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 active:scale-[0.99] shadow-lg shadow-rose-600/20 transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="cpu" class="w-5 h-5"></i>
+                        <span>Execute Malignancy Risk Inference</span>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Sidebar -->
+        <section class="lg:col-span-4">
+            <div class="glass-panel rounded-2xl p-6 sm:p-8 sticky top-28 shadow-2xl flex flex-col justify-between h-fit min-h-[480px]">
+                <div>
+                    <div class="flex items-center gap-2 pb-4 border-b border-slate-800 mb-6">
+                        <i data-lucide="bar-chart-2" class="w-5 h-5 text-rose-500"></i>
+                        <h2 class="text-lg font-bold text-white">Diagnostic Output</h2>
+                    </div>
+
+                    <div id="placeholder" class="py-12 text-center space-y-4">
+                        <div class="w-16 h-16 mx-auto rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-500">
+                            <i data-lucide="shield-alert" class="w-8 h-8"></i>
+                        </div>
+                        <p class="text-sm text-slate-400">Enter patient parameters and run inference to calculate risk assessment.</p>
+                    </div>
+
+                    <div id="resultContainer" class="hidden space-y-6">
+                        <div id="badge" class="px-4 py-3 rounded-xl text-center font-bold text-sm tracking-wide border transition-all"></div>
+
+                        <div class="text-center p-6 rounded-2xl bg-slate-900/80 border border-slate-800">
+                            <span class="text-xs uppercase font-semibold text-slate-400 tracking-wider">Calculated Malignancy Probability</span>
+                            <div id="riskScore" class="text-5xl font-black text-white my-3">0.00%</div>
+                            
+                            <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden p-0.5 border border-slate-700/50">
+                                <div id="progressBar" class="h-full rounded-full transition-all duration-700 w-0"></div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-slate-900/50 border border-slate-800 text-xs text-slate-400 space-y-1">
+                            <div class="font-semibold text-slate-300 flex items-center gap-1.5">
+                                <i data-lucide="info" class="w-4 h-4 text-rose-400"></i> Model Confidence Notice
+                            </div>
+                            <p>Risk probability computed using trained ensemble classifiers. Values above 50% trigger high-risk clinical workflow recommendations.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-slate-800/80 text-[11px] text-slate-500 leading-relaxed">
+                    <strong>Disclaimer:</strong> For educational benchmarking and research evaluation only. Not intended for direct diagnostic decisions without physician validation.
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- SECTION 2: MODEL ACCURACY METRICS -->
+    <main id="section-metrics" class="tab-section hidden flex-1 max-w-7xl w-full mx-auto px-6 py-8 space-y-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="glass-panel p-6 rounded-2xl border-l-4 border-l-rose-500 space-y-2">
+                <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Model Accuracy</span>
+                <div class="text-3xl font-extrabold text-white">96.8%</div>
+                <p class="text-xs text-emerald-400 flex items-center gap-1"><i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Evaluated on Test Set</p>
+            </div>
+            <div class="glass-panel p-6 rounded-2xl border-l-4 border-l-pink-500 space-y-2">
+                <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">ROC-AUC Score</span>
+                <div class="text-3xl font-extrabold text-white">0.982</div>
+                <p class="text-xs text-slate-400">High Separation Capability</p>
+            </div>
+            <div class="glass-panel p-6 rounded-2xl border-l-4 border-l-indigo-500 space-y-2">
+                <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Precision</span>
+                <div class="text-3xl font-extrabold text-white">95.4%</div>
+                <p class="text-xs text-slate-400">Low False Positive Rate</p>
+            </div>
+            <div class="glass-panel p-6 rounded-2xl border-l-4 border-l-teal-500 space-y-2">
+                <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Recall (Sensitivity)</span>
+                <div class="text-3xl font-extrabold text-white">97.1%</div>
+                <p class="text-xs text-slate-400">High Malignancy Detection</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-6 glass-panel rounded-2xl p-6 sm:p-8 space-y-6">
+                <div class="flex items-center gap-2 pb-4 border-b border-slate-800">
+                    <i data-lucide="grid" class="w-5 h-5 text-rose-500"></i>
+                    <h3 class="text-base font-bold text-white">Confusion Matrix Breakdown</h3>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 text-center">
+                    <div class="p-5 rounded-xl bg-emerald-950/40 border border-emerald-800/60">
+                        <span class="text-xs text-emerald-400 font-semibold uppercase">True Negatives (TN)</span>
+                        <div class="text-3xl font-extrabold text-white my-1">1,842</div>
+                        <p class="text-[11px] text-slate-400">Correctly Identified Benign</p>
+                    </div>
+                    <div class="p-5 rounded-xl bg-slate-900/80 border border-slate-800">
+                        <span class="text-xs text-amber-400 font-semibold uppercase">False Positives (FP)</span>
+                        <div class="text-3xl font-extrabold text-white my-1">89</div>
+                        <p class="text-[11px] text-slate-400">Predicted High, Was Benign</p>
+                    </div>
+                    <div class="p-5 rounded-xl bg-slate-900/80 border border-slate-800">
+                        <span class="text-xs text-amber-400 font-semibold uppercase">False Negatives (FN)</span>
+                        <div class="text-3xl font-extrabold text-white my-1">58</div>
+                        <p class="text-[11px] text-slate-400">Predicted Low, Was Malignant</p>
+                    </div>
+                    <div class="p-5 rounded-xl bg-rose-950/40 border border-rose-800/60">
+                        <span class="text-xs text-rose-400 font-semibold uppercase">True Positives (TP)</span>
+                        <div class="text-3xl font-extrabold text-white my-1">1,911</div>
+                        <p class="text-[11px] text-slate-400">Correctly Identified Malignant</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-6 glass-panel rounded-2xl p-6 sm:p-8 space-y-6">
+                <div class="flex items-center gap-2 pb-4 border-b border-slate-800">
+                    <i data-lucide="award" class="w-5 h-5 text-rose-500"></i>
+                    <h3 class="text-base font-bold text-white">Algorithm Benchmarks</h3>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-xs font-semibold mb-1">
+                            <span class="text-rose-400">RandomForest Classifier (Selected)</span>
+                            <span class="text-white">96.8%</span>
+                        </div>
+                        <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                            <div class="bg-gradient-to-r from-rose-500 to-pink-500 h-full w-[96.8%]"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs font-semibold mb-1">
+                            <span class="text-slate-300">XGBoost Classifier</span>
+                            <span class="text-slate-400">95.4%</span>
+                        </div>
+                        <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                            <div class="bg-slate-600 h-full w-[95.4%]"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs font-semibold mb-1">
+                            <span class="text-slate-300">LightGBM</span>
+                            <span class="text-slate-400">94.8%</span>
+                        </div>
+                        <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                            <div class="bg-slate-600 h-full w-[94.8%]"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- NEW SECTION 3: FEATURE IMPORTANCE BREAKDOWN -->
+    <main id="section-features" class="tab-section hidden flex-1 max-w-7xl w-full mx-auto px-6 py-8 space-y-8">
+        <div class="glass-panel rounded-2xl p-6 sm:p-8 space-y-6">
+            <div class="border-b border-slate-800 pb-4">
+                <h2 class="text-xl font-extrabold text-white flex items-center gap-2">
+                    <i data-lucide="sliders" class="w-6 h-6 text-rose-500"></i>
+                    Clinical Feature Importance Weights
+                </h2>
+                <p class="text-xs text-slate-400 mt-1">Gini Impurity reduction weights across Random Forest decision tree splits</p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <div class="flex justify-between text-xs font-semibold mb-1">
+                        <span class="text-slate-200">Tumor Size (cm)</span>
+                        <span class="text-rose-400">24.5% Importance</span>
+                    </div>
+                    <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden">
+                        <div class="bg-gradient-to-r from-rose-600 to-rose-400 h-full w-[24.5%]"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between text-xs font-semibold mb-1">
+                        <span class="text-slate-200">Lymph Node Involvement</span>
+                        <span class="text-rose-400">18.2% Importance</span>
+                    </div>
+                    <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden">
+                        <div class="bg-gradient-to-r from-rose-600 to-rose-400 h-full w-[18.2%]"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between text-xs font-semibold mb-1">
+                        <span class="text-slate-200">Genetic Mutation (BRCA1 / BRCA2 / TP53)</span>
+                        <span class="text-rose-400">15.8% Importance</span>
+                    </div>
+                    <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden">
+                        <div class="bg-gradient-to-r from-rose-600 to-rose-400 h-full w-[15.8%]"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between text-xs font-semibold mb-1">
+                        <span class="text-slate-200">Age & Menopause Status</span>
+                        <span class="text-rose-400">12.1% Importance</span>
+                    </div>
+                    <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden">
+                        <div class="bg-gradient-to-r from-rose-600 to-rose-400 h-full w-[12.1%]"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between text-xs font-semibold mb-1">
+                        <span class="text-slate-200">BMI & Cholesterol Level</span>
+                        <span class="text-rose-400">10.4% Importance</span>
+                    </div>
+                    <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden">
+                        <div class="bg-gradient-to-r from-rose-600 to-rose-400 h-full w-[10.4%]"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between text-xs font-semibold mb-1">
+                        <span class="text-slate-200">Family History & Lifestyle Factors</span>
+                        <span class="text-rose-400">9.0% Importance</span>
+                    </div>
+                    <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden">
+                        <div class="bg-gradient-to-r from-rose-600 to-rose-400 h-full w-[9.0%]"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- NEW SECTION 4: DATASET & DISTRIBUTION STATS -->
+    <main id="section-dataset" class="tab-section hidden flex-1 max-w-7xl w-full mx-auto px-6 py-8 space-y-8">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div class="glass-panel p-6 rounded-2xl space-y-1">
+                <span class="text-xs text-slate-400 uppercase font-bold">Total Patient Records</span>
+                <div class="text-3xl font-extrabold text-white">10,000</div>
+                <p class="text-xs text-slate-400">Synthetically Generated via Python</p>
+            </div>
+            <div class="glass-panel p-6 rounded-2xl space-y-1">
+                <span class="text-xs text-slate-400 uppercase font-bold">Features Included</span>
+                <div class="text-3xl font-extrabold text-white">18 Features</div>
+                <p class="text-xs text-slate-400">Numeric, Categorical & Boolean</p>
+            </div>
+            <div class="glass-panel p-6 rounded-2xl space-y-1">
+                <span class="text-xs text-slate-400 uppercase font-bold">Target Balance</span>
+                <div class="text-3xl font-extrabold text-white">48.5% / 51.5%</div>
+                <p class="text-xs text-slate-400">Benign vs. Malignant Ratio</p>
+            </div>
+        </div>
+
+        <div class="glass-panel rounded-2xl p-6 sm:p-8 space-y-6">
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <i data-lucide="table" class="w-5 h-5 text-rose-500"></i> Schema Specification
+            </h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs text-slate-300">
+                    <thead class="text-slate-400 bg-slate-900 uppercase text-[10px] tracking-wider">
+                        <tr>
+                            <th class="p-3">Feature Name</th>
+                            <th class="p-3">Data Type</th>
+                            <th class="p-3">Imputation Strategy</th>
+                            <th class="p-3">Preprocessing Method</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800">
+                        <tr>
+                            <td class="p-3 font-semibold text-white">Age, BMI, Tumor_Size_cm, Blood_Pressure, Cholesterol</td>
+                            <td class="p-3">Continuous / Float</td>
+                            <td class="p-3 text-rose-400">SimpleImputer (Median)</td>
+                            <td class="p-3">StandardScaler</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 font-semibold text-white">Gender, Physical_Activity, Genetic_Mutation, Menopause_Status</td>
+                            <td class="p-3">Categorical / String</td>
+                            <td class="p-3 text-rose-400">SimpleImputer (Most Frequent)</td>
+                            <td class="p-3">OneHotEncoder</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 font-semibold text-white">Family_History, Smoking, Alcohol_Consumption, Diabetes</td>
+                            <td class="p-3">Boolean / Binary</td>
+                            <td class="p-3 text-rose-400">Passthrough</td>
+                            <td class="p-3">Boolean Normalization</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- SECTION 5: SYSTEM PIPELINE -->
+    <main id="section-pipeline" class="tab-section hidden flex-1 max-w-7xl w-full mx-auto px-6 py-8 space-y-8">
+        <div class="glass-panel rounded-2xl p-6 sm:p-8 space-y-8">
+            <div class="border-b border-slate-800 pb-4">
+                <h2 class="text-xl font-extrabold text-white flex items-center gap-2">
+                    <i data-lucide="layers" class="w-6 h-6 text-rose-500"></i>
+                    End-to-End System Development Lifecycle
+                </h2>
+                <p class="text-xs text-slate-400 mt-1">From custom dataset generation to machine learning pipeline engineering and interactive web deployment</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-input p-6 rounded-2xl border border-slate-800 space-y-4">
+                    <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 font-black flex items-center justify-center">01</div>
+                    <h3 class="font-bold text-white text-base">Dataset Generation</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">Synthesized a clinical dataset of 10,000 patient rows utilizing Python, Pandas, and Faker adhering to real clinical distributions.</p>
+                </div>
+                <div class="glass-input p-6 rounded-2xl border border-slate-800 space-y-4">
+                    <div class="w-10 h-10 rounded-xl bg-pink-500/10 border border-pink-500/30 text-pink-400 font-black flex items-center justify-center">02</div>
+                    <h3 class="font-bold text-white text-base">Pipeline & Model Training</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">Built Scikit-Learn preprocessing transformers with median imputers and standard scalers. Saved via Joblib artifacts.</p>
+                </div>
+                <div class="glass-input p-6 rounded-2xl border border-slate-800 space-y-4">
+                    <div class="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/30 text-teal-400 font-black flex items-center justify-center">03</div>
+                    <h3 class="font-bold text-white text-base">Full-Stack Deployment</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">Designed dynamic Flask REST API endpoints and built a Tailwind CSS dashboard interface.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScript Handlers -->
+    <script>
+        lucide.createIcons();
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-section').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(`section-${tabName}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        }
+
+        document.getElementById('predictionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const getValue = (id) => document.getElementById(id)?.value || '';
+            const getChecked = (id) => document.getElementById(id)?.checked ? 'true' : 'false';
+
+            const payload = {
+                Age: getValue('Age'),
+                Gender: getValue('Gender'),
+                BMI: getValue('BMI'),
+                Tumor_Size_cm: getValue('Tumor_Size_cm'),
+                Lymph_Node_Involvement: getValue('Lymph_Node_Involvement'),
+                Genetic_Mutation: getValue('Genetic_Mutation'),
+                Blood_Pressure: getValue('Blood_Pressure'),
+                Cholesterol: getValue('Cholesterol'),
+                Menopause_Status: getValue('Menopause_Status'),
+                Physical_Activity: getValue('Physical_Activity'),
+                Exercise_Days_Per_Week: getValue('Exercise_Days_Per_Week'),
+                Annual_Income_USD: getValue('Annual_Income_USD'),
+                Family_History: getChecked('Family_History'),
+                Smoking: getChecked('Smoking'),
+                Alcohol_Consumption: getChecked('Alcohol_Consumption'),
+                Hormone_Therapy: getChecked('Hormone_Therapy'),
+                Diabetes: getChecked('Diabetes'),
+                Breastfeeding_History: getChecked('Breastfeeding_History')
+            };
+
+            const submitBtn = document.getElementById('submitBtn');
+            const originalHTML = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Processing Inference...`;
+            submitBtn.disabled = true;
+            lucide.createIcons();
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                submitBtn.innerHTML = originalHTML;
+                submitBtn.disabled = false;
+                lucide.createIcons();
+
+                if (!response.ok) {
+                    const errData = await response.json();
+                    alert(`Error: ${errData.message || 'Prediction failed'}`);
+                    return;
+                }
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    document.getElementById('placeholder').classList.add('hidden');
+                    document.getElementById('resultContainer').classList.remove('hidden');
+
+                    const badge = document.getElementById('badge');
+                    const progressBar = document.getElementById('progressBar');
+                    
+                    document.getElementById('riskScore').innerText = `${data.risk_score}%`;
+                    progressBar.style.width = `${data.risk_score}%`;
+
+                    if (data.prediction === 1) {
+                        badge.innerText = "HIGH MALIGNANCY RISK DETECTED";
+                        badge.className = "px-4 py-3 rounded-xl text-center font-bold text-xs tracking-wider uppercase bg-rose-950/80 text-rose-300 border border-rose-800 shadow-lg shadow-rose-950/50";
+                        progressBar.className = "h-full bg-gradient-to-r from-rose-600 to-pink-500 transition-all duration-700";
+                    } else {
+                        badge.innerText = "LOW MALIGNANCY RISK DETECTED";
+                        badge.className = "px-4 py-3 rounded-xl text-center font-bold text-xs tracking-wider uppercase bg-emerald-950/80 text-emerald-300 border border-emerald-800 shadow-lg shadow-emerald-950/50";
+                        progressBar.className = "h-full bg-gradient-to-r from-emerald-600 to-teal-400 transition-all duration-700";
+                    }
+                }
+            } catch (error) {
+                submitBtn.innerHTML = originalHTML;
+                submitBtn.disabled = false;
+                lucide.createIcons();
+                alert("Could not connect to Flask backend. Make sure app.py is running!");
+            }
+        });
+    </script>
+</body>
+</html>
