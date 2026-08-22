@@ -2,10 +2,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const fillBtn = document.getElementById('fillDefaultsBtn');
     const form = document.getElementById('predictForm');
 
-    // 1. Autofill Sample Data (Benign / Low-Risk Profile)
+    // 1. Autofill Sample Data
     if (fillBtn) {
         fillBtn.addEventListener('click', () => {
-            // Set numeric inputs to normal/low-risk clinical ranges
             document.querySelectorAll('input[type="number"]').forEach(input => {
                 const name = input.name.toLowerCase();
                 if (name.includes('age')) input.value = 38;
@@ -18,14 +17,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 else input.value = 0;
             });
 
-            // Set all categorical dropdowns to 0 (No / Negative / Low Risk)
             document.querySelectorAll('select').forEach(select => {
                 select.value = "0";
             });
         });
     }
 
-    // 2. Handle Asynchronous Form Submission
+    // 2. Tab Filtering logic for feature categories
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const featureItems = document.querySelectorAll('.feature-item');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const filter = button.getAttribute('data-filter');
+
+            tabButtons.forEach(btn => {
+                btn.classList.remove('bg-pink-600', 'text-white', 'shadow-md', 'shadow-pink-600/20');
+                btn.classList.add('text-zinc-400', 'hover:text-white', 'hover:bg-zinc-900');
+            });
+
+            button.classList.add('bg-pink-600', 'text-white', 'shadow-md', 'shadow-pink-600/20');
+            button.classList.remove('text-zinc-400', 'hover:text-white', 'hover:bg-zinc-900');
+
+            featureItems.forEach(item => {
+                const category = item.getAttribute('data-category');
+                if (filter === 'all' || category === filter) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    });
+
+    // 3. Async Form Submission
     if (form) {
         form.addEventListener('submit', async function (e) {
             e.preventDefault();
@@ -34,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const idleState = document.getElementById('idleState');
             const resultBox = document.getElementById('resultBox');
 
-            // Button loading state
             submitBtn.disabled = true;
             submitBtn.innerHTML = `
                 <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -44,7 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span>Running Inference Engine...</span>
             `;
 
-            // Extract form inputs into key-value JSON
             const formData = new FormData(this);
             const payload = {};
             formData.forEach((value, key) => { payload[key] = value; });
@@ -59,42 +82,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await response.json();
 
                 if (response.ok && data.status === 'success') {
-                    // Hide empty state & expose results panel
-                    idleState.classList.add('hidden');
-                    resultBox.classList.remove('hidden');
+                    if (idleState) idleState.classList.add('hidden');
+                    if (resultBox) resultBox.classList.remove('hidden');
 
                     const statusBanner = document.getElementById('statusBanner');
                     const resultLabel = document.getElementById('resultLabel');
                     const resultSubtitle = document.getElementById('resultSubtitle');
                     const actionText = document.getElementById('actionText');
 
-                    // Update UI elements based on prediction classification
                     if (data.diagnosis === 'Malignant') {
-                        statusBanner.className = "p-5 rounded-2xl border border-rose-500/30 bg-rose-500/10 text-rose-400 shadow-rose-900/10";
-                        resultLabel.innerText = "MALIGNANT";
-                        resultSubtitle.innerText = "Elevated risk indicators detected.";
-                        actionText.innerText = "High likelihood of malignancy detected. Flag for immediate secondary clinical review, additional diagnostic imaging, and biopsy verification.";
+                        if (statusBanner) statusBanner.className = "p-5 rounded-2xl border border-rose-500/30 bg-rose-500/10 text-rose-400 shadow-rose-900/10";
+                        if (resultLabel) resultLabel.innerText = "MALIGNANT";
+                        if (resultSubtitle) resultSubtitle.innerText = "Elevated risk indicators detected.";
+                        if (actionText) actionText.innerText = "High likelihood of malignancy detected. Flag for immediate secondary clinical review, additional diagnostic imaging, and biopsy verification.";
                     } else {
-                        statusBanner.className = "p-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 shadow-emerald-900/10";
-                        resultLabel.innerText = "BENIGN";
-                        resultSubtitle.innerText = "Low risk profile within safe diagnostic ranges.";
-                        actionText.innerText = "Parameters indicate a low-risk profile. Continue routine patient monitoring according to standard clinical protocol.";
+                        if (statusBanner) statusBanner.className = "p-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 shadow-emerald-900/10";
+                        if (resultLabel) resultLabel.innerText = "BENIGN";
+                        if (resultSubtitle) resultSubtitle.innerText = "Low risk profile within safe diagnostic ranges.";
+                        if (actionText) actionText.innerText = "Parameters indicate a low-risk profile. Continue routine patient monitoring according to standard clinical protocol.";
                     }
 
-                    // Update progress bars & numeric values
-                    document.getElementById('riskScoreVal').innerText = `${data.risk_score}%`;
-                    document.getElementById('riskBar').style.width = `${data.risk_score}%`;
+                    if (document.getElementById('riskScoreVal')) document.getElementById('riskScoreVal').innerText = `${data.risk_score}%`;
+                    if (document.getElementById('riskBar')) document.getElementById('riskBar').style.width = `${data.risk_score}%`;
 
-                    document.getElementById('confidenceVal').innerText = `${data.confidence}%`;
-                    document.getElementById('confidenceBar').style.width = `${data.confidence}%`;
+                    if (document.getElementById('confidenceVal')) document.getElementById('confidenceVal').innerText = `${data.confidence}%`;
+                    if (document.getElementById('confidenceBar')) document.getElementById('confidenceBar').style.width = `${data.confidence}%`;
 
                 } else {
                     alert(`Inference Error: ${data.error || 'Failed to process diagnosis.'}`);
                 }
             } catch (err) {
-                alert("Server Connection Failed. Please check if your Flask/Vercel server is running.");
+                alert("Server Connection Failed. Check server logs on Vercel.");
             } finally {
-                // Restore button state
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = `
                     <span>Execute Diagnostic Assessment</span>
