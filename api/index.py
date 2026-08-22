@@ -3,11 +3,17 @@ import joblib
 import numpy as np
 from flask import Flask, render_template, request, jsonify
 
-app = Flask(__name__, template_folder='../templates', static_folder='../static')
+# Point template and static folders relative to this file's location in api/
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, '..'))
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MODEL_DIR = os.path.join(BASE_DIR, 'model')
+app = Flask(
+    __name__,
+    template_folder=os.path.join(PROJECT_ROOT, 'templates'),
+    static_folder=os.path.join(PROJECT_ROOT, 'static')
+)
 
+MODEL_DIR = os.path.join(PROJECT_ROOT, 'model')
 MODEL_PATH = os.path.join(MODEL_DIR, 'model.joblib')
 SCALER_PATH = os.path.join(MODEL_DIR, 'scaler.joblib')
 FEATURES_PATH = os.path.join(MODEL_DIR, 'feature_names.joblib')
@@ -28,7 +34,7 @@ def home():
 @app.route('/api/predict', methods=['POST'])
 def predict():
     if not model or not scaler:
-        return jsonify({'status': 'error', 'error': 'Model files not loaded.'}), 500
+        return jsonify({'status': 'error', 'error': f'Model files not loaded. Folder check: {os.path.exists(MODEL_DIR)}'}), 500
 
     try:
         data = request.get_json(force=True)
@@ -38,7 +44,7 @@ def predict():
         # Construct vector in exact column order required by the model
         input_vector = []
         for feature in feature_names:
-            val = data.get(feature, 0)  # Default to 0 if not sent
+            val = data.get(feature, 0)
             try:
                 input_vector.append(float(val))
             except (ValueError, TypeError):
@@ -67,7 +73,6 @@ def predict():
     except Exception as e:
         return jsonify({'status': 'error', 'error': str(e)}), 500
 
-app_instance = app
-
+# Vercel entrypoint exposes 'app'
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
