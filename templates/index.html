@@ -97,19 +97,31 @@
                 class="hidden md:flex items-center space-x-8 text-sm font-medium text-zinc-400"
                 id="globalNav"
             >
-                <a href="#hero" class="nav-link text-pink-400 transition hover:text-pink-300">
+                <a
+                    href="#hero"
+                    class="nav-link text-pink-400 transition hover:text-pink-300"
+                >
                     Overview
                 </a>
 
-                <a href="#dashboard" class="nav-link hover:text-zinc-200 transition">
+                <a
+                    href="#dashboard"
+                    class="nav-link hover:text-zinc-200 transition"
+                >
                     Diagnostic Dashboard
                 </a>
 
-                <a href="#metrics" class="nav-link hover:text-zinc-200 transition">
+                <a
+                    href="#metrics"
+                    class="nav-link hover:text-zinc-200 transition"
+                >
                     Model Metrics
                 </a>
 
-                <a href="#guidelines" class="nav-link hover:text-zinc-200 transition">
+                <a
+                    href="#guidelines"
+                    class="nav-link hover:text-zinc-200 transition"
+                >
                     Clinical Guidelines
                 </a>
             </nav>
@@ -154,8 +166,10 @@
 
         <div class="absolute top-20 -right-20 w-80 h-80 bg-rose-600/10 rounded-full blur-[100px] pointer-events-none"></div>
 
+
         <div class="max-w-7xl mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
 
+            <!-- HERO LEFT -->
             <div class="lg:col-span-7 space-y-6">
 
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-pink-500/20 bg-pink-500/10 text-pink-400 text-xs font-mono">
@@ -168,6 +182,7 @@
                     Precision Oncology AI Engine
                 </div>
 
+
                 <h1 class="text-4xl md:text-6xl font-extrabold text-white tracking-tight leading-[1.1]">
                     Next-Gen Clinical Risk Assessment
 
@@ -176,9 +191,11 @@
                     </span>
                 </h1>
 
+
                 <p class="text-sm md:text-base text-zinc-400 max-w-2xl leading-relaxed">
                     OncoPredict integrates high-dimensional pathology metrics and patient lifestyle demographics to deliver fast, explainable malignancy risk scoring for modern oncology teams.
                 </p>
+
 
                 <div class="flex flex-wrap items-center gap-4 pt-2">
 
@@ -203,6 +220,7 @@
                         </svg>
                     </a>
 
+
                     <a
                         href="#metrics"
                         class="bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 hover:border-zinc-700 text-xs md:text-sm px-5 py-3.5 rounded-xl transition flex items-center gap-2"
@@ -212,6 +230,8 @@
 
                 </div>
 
+
+                <!-- TELEMETRY -->
                 <div class="grid grid-cols-3 gap-4 pt-6 border-t border-zinc-900/80 max-w-lg">
 
                     <div>
@@ -224,6 +244,7 @@
                         </p>
                     </div>
 
+
                     <div>
                         <p class="text-[10px] uppercase font-mono tracking-wider text-zinc-500">
                             Validation ROC
@@ -233,6 +254,7 @@
                             0.964 AUC
                         </p>
                     </div>
+
 
                     <div>
                         <p class="text-[10px] uppercase font-mono tracking-wider text-zinc-500">
@@ -270,8 +292,10 @@
 
                     </div>
 
+
                     <div class="space-y-5">
 
+                        <!-- TUMOR SIZE -->
                         <div>
 
                             <div class="flex justify-between text-xs mb-2">
@@ -292,6 +316,7 @@
 
                             </div>
 
+
                             <input
                                 type="range"
                                 id="simTumorSize"
@@ -304,6 +329,8 @@
 
                         </div>
 
+
+                        <!-- BIOPSY -->
                         <div>
 
                             <div class="flex justify-between text-xs mb-2">
@@ -324,6 +351,7 @@
 
                             </div>
 
+
                             <input
                                 type="range"
                                 id="simBiopsyScore"
@@ -336,6 +364,8 @@
 
                         </div>
 
+
+                        <!-- SIMULATION RESULT -->
                         <div class="bg-black/90 border border-zinc-800 p-4 rounded-xl space-y-3">
 
                             <div class="flex justify-between items-center text-xs">
@@ -353,6 +383,7 @@
 
                             </div>
 
+
                             <div class="w-full bg-zinc-900 h-2.5 rounded-full overflow-hidden border border-zinc-800">
 
                                 <div
@@ -362,6 +393,7 @@
                                 ></div>
 
                             </div>
+
 
                             <div class="flex justify-between items-center text-[11px] text-zinc-500 pt-1">
 
@@ -403,7 +435,9 @@
         class="flex-1 max-w-7xl w-full mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 pt-8"
     >
 
+        <!-- ===================================================== -->
         <!-- INPUT FORM -->
+        <!-- ===================================================== -->
 
         <section
             class="lg:col-span-7 bg-zinc-950/80 border border-zinc-900 rounded-2xl p-6 shadow-2xl flex flex-col justify-between backdrop-blur-sm"
@@ -425,16 +459,14 @@
 
                     </div>
 
-                    <!-- FIXED FEATURE COUNTER -->
-                    <span
-                        id="featureCountBadge"
-                        class="text-xs font-mono bg-pink-500/10 text-pink-400 border border-pink-500/20 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm"
-                    >
-                        <span class="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse"></span>
 
-                        Total Features:
-                        <strong id="featureCount">Loading...</strong>
-                    </span>
+                  <span class="text-xs font-mono bg-pink-500/10 text-pink-400 border border-pink-500/20 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+
+    <span class="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse"></span>
+
+    Total Features: <span id="featureCount">0</span>
+
+</span>
 
                 </div>
 
@@ -480,7 +512,7 @@
                         class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar"
                     >
 
-                        {% for feature in features or [] %}
+                        {% for feature in features %}
 
                         <div
                             class="feature-item flex flex-col justify-end bg-zinc-900/40 p-3 rounded-xl border border-zinc-900/80 hover:border-zinc-800 transition-colors"
@@ -497,6 +529,7 @@
 
                             {% if feature.endswith('_Yes') or feature.endswith('_Male') or 'Biopsy' in feature or 'Mammogram' in feature or 'Menopause' in feature or 'Activity' in feature or 'Genetic' in feature %}
 
+                            <!-- SELECT -->
                             <div class="relative">
 
                                 <select
@@ -523,6 +556,8 @@
 
                                 </select>
 
+
+                                <!-- CUSTOM ARROW -->
                                 <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
 
                                     <svg
@@ -545,6 +580,7 @@
 
                             {% else %}
 
+                            <!-- NUMBER INPUT -->
                             <input
                                 type="number"
                                 step="any"
@@ -556,40 +592,6 @@
                             >
 
                             {% endif %}
-
-                        </div>
-
-                        {% else %}
-
-                        <!-- EMPTY FEATURE FALLBACK -->
-                        <div
-                            id="emptyFeatureState"
-                            class="md:col-span-2 text-center py-12 border border-dashed border-zinc-800 rounded-2xl bg-black/40"
-                        >
-
-                            <div class="w-10 h-10 mx-auto mb-3 rounded-xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center">
-                                <svg
-                                    class="w-5 h-5 text-pink-400"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                    />
-                                </svg>
-                            </div>
-
-                            <p class="text-xs font-semibold text-zinc-300">
-                                Model Features Not Loaded
-                            </p>
-
-                            <p class="text-[11px] text-zinc-500 mt-1 max-w-sm mx-auto">
-                                The interface is ready, but the backend did not provide the trained model feature names.
-                            </p>
 
                         </div>
 
@@ -636,7 +638,9 @@
         </section>
 
 
+        <!-- ===================================================== -->
         <!-- RESULTS -->
+        <!-- ===================================================== -->
 
         <section
             class="lg:col-span-5 bg-zinc-950/80 border border-zinc-900 rounded-2xl p-6 shadow-2xl flex flex-col justify-between"
@@ -662,7 +666,6 @@
 
 
                 <!-- IDLE -->
-
                 <div
                     id="idleState"
                     class="text-center py-20 border border-dashed border-zinc-900 rounded-2xl bg-black/60"
@@ -698,7 +701,6 @@
 
 
                 <!-- RESULT -->
-
                 <div
                     id="resultBox"
                     class="hidden space-y-6"
@@ -732,6 +734,7 @@
 
                     <div class="space-y-5 bg-black p-5 rounded-2xl border border-zinc-900">
 
+                        <!-- RISK -->
                         <div>
 
                             <div class="flex justify-between text-xs font-medium mb-1.5">
@@ -749,6 +752,7 @@
 
                             </div>
 
+
                             <div class="w-full bg-zinc-900 h-2.5 rounded-full overflow-hidden border border-zinc-800">
 
                                 <div
@@ -761,6 +765,7 @@
                         </div>
 
 
+                        <!-- CONFIDENCE -->
                         <div>
 
                             <div class="flex justify-between text-xs font-medium mb-1.5">
@@ -778,6 +783,7 @@
 
                             </div>
 
+
                             <div class="w-full bg-zinc-900 h-2.5 rounded-full overflow-hidden border border-zinc-800">
 
                                 <div
@@ -792,6 +798,7 @@
                     </div>
 
 
+                    <!-- ACTION -->
                     <div
                         id="actionNotice"
                         class="p-4 rounded-xl bg-black border border-zinc-900 text-xs text-zinc-300"
@@ -835,6 +842,7 @@
 
         <div class="absolute inset-0 bg-gradient-to-b from-pink-500/5 via-transparent to-transparent pointer-events-none rounded-3xl"></div>
 
+
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4 relative z-10">
 
             <div>
@@ -847,15 +855,18 @@
 
                 </div>
 
+
                 <h2 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
                     LightGBM Performance & Operational Metrics
                 </h2>
+
 
                 <p class="text-xs text-zinc-400 mt-1 max-w-xl">
                     Evaluated on cross-validated multi-center clinical datasets with continuous hyperparameter calibration.
                 </p>
 
             </div>
+
 
             <div class="flex items-center gap-2">
 
@@ -873,9 +884,9 @@
 
 
         <!-- KPI CARDS -->
-
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 relative z-10">
 
+            <!-- ROC -->
             <div class="group bg-zinc-950/80 hover:bg-zinc-900/90 border border-zinc-900 hover:border-pink-500/40 p-5 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-pink-500/10">
 
                 <div class="flex justify-between items-start">
@@ -917,6 +928,7 @@
             </div>
 
 
+            <!-- SENSITIVITY -->
             <div class="group bg-zinc-950/80 hover:bg-zinc-900/90 border border-zinc-900 hover:border-pink-500/40 p-5 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-pink-500/10">
 
                 <div class="flex justify-between items-start">
@@ -940,6 +952,7 @@
             </div>
 
 
+            <!-- PRECISION -->
             <div class="group bg-zinc-950/80 hover:bg-zinc-900/90 border border-zinc-900 hover:border-pink-500/40 p-5 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-pink-500/10">
 
                 <div class="flex justify-between items-start">
@@ -963,6 +976,7 @@
             </div>
 
 
+            <!-- LATENCY -->
             <div class="group bg-zinc-950/80 hover:bg-zinc-900/90 border border-zinc-900 hover:border-pink-500/40 p-5 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-pink-500/10">
 
                 <div class="flex justify-between items-start">
@@ -995,9 +1009,9 @@
 
 
         <!-- FEATURE / MATRIX -->
-
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10">
 
+            <!-- FEATURE IMPORTANCE -->
             <div class="lg:col-span-7 bg-zinc-950/80 border border-zinc-900 hover:border-zinc-800 p-6 rounded-2xl transition duration-300 flex flex-col justify-between">
 
                 <div>
@@ -1029,8 +1043,10 @@
 
                     </h3>
 
+
                     <div class="space-y-4">
 
+                        <!-- FEATURE 1 -->
                         <div class="group cursor-default">
 
                             <div class="flex justify-between text-xs mb-1.5">
@@ -1045,6 +1061,7 @@
 
                             </div>
 
+
                             <div class="w-full bg-black h-2.5 rounded-full overflow-hidden border border-zinc-900 p-0.5">
 
                                 <div class="bg-gradient-to-r from-pink-600 to-rose-400 h-full w-[85%] rounded-full group-hover:brightness-125 transition-all duration-500"></div>
@@ -1054,6 +1071,7 @@
                         </div>
 
 
+                        <!-- FEATURE 2 -->
                         <div class="group cursor-default">
 
                             <div class="flex justify-between text-xs mb-1.5">
@@ -1068,6 +1086,7 @@
 
                             </div>
 
+
                             <div class="w-full bg-black h-2.5 rounded-full overflow-hidden border border-zinc-900 p-0.5">
 
                                 <div class="bg-gradient-to-r from-pink-600 to-rose-400 h-full w-[65%] rounded-full group-hover:brightness-125 transition-all duration-500"></div>
@@ -1077,6 +1096,7 @@
                         </div>
 
 
+                        <!-- FEATURE 3 -->
                         <div class="group cursor-default">
 
                             <div class="flex justify-between text-xs mb-1.5">
@@ -1091,6 +1111,7 @@
 
                             </div>
 
+
                             <div class="w-full bg-black h-2.5 rounded-full overflow-hidden border border-zinc-900 p-0.5">
 
                                 <div class="bg-gradient-to-r from-pink-600 to-rose-400 h-full w-[55%] rounded-full group-hover:brightness-125 transition-all duration-500"></div>
@@ -1100,6 +1121,7 @@
                         </div>
 
 
+                        <!-- FEATURE 4 -->
                         <div class="group cursor-default">
 
                             <div class="flex justify-between text-xs mb-1.5">
@@ -1114,6 +1136,7 @@
 
                             </div>
 
+
                             <div class="w-full bg-black h-2.5 rounded-full overflow-hidden border border-zinc-900 p-0.5">
 
                                 <div class="bg-gradient-to-r from-pink-600 to-rose-400 h-full w-[42%] rounded-full group-hover:brightness-125 transition-all duration-500"></div>
@@ -1125,6 +1148,7 @@
                     </div>
 
                 </div>
+
 
                 <div class="mt-6 pt-3 border-t border-zinc-900/80 flex items-center justify-between text-[10px] text-zinc-500">
 
@@ -1141,6 +1165,7 @@
             </div>
 
 
+            <!-- CONFUSION MATRIX -->
             <div class="lg:col-span-5 bg-zinc-950/80 border border-zinc-900 hover:border-zinc-800 p-6 rounded-2xl transition duration-300 flex flex-col justify-between">
 
                 <div>
@@ -1156,6 +1181,7 @@
                         </p>
 
                     </div>
+
 
                     <div class="grid grid-cols-2 gap-3">
 
@@ -1230,6 +1256,7 @@
 
                 </div>
 
+
                 <div class="mt-6 pt-3 border-t border-zinc-900 text-[10px] text-zinc-500 flex items-center justify-between">
 
                     <span>
@@ -1282,15 +1309,18 @@
 
                 </div>
 
+
                 <h2 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
                     Diagnostic Protocol & Risk Stratification
                 </h2>
+
 
                 <p class="text-xs text-zinc-400 mt-1 max-w-xl">
                     Standard operating guidelines for interpreting AI assessment outputs alongside pathology reports.
                 </p>
 
             </div>
+
 
             <div class="text-right">
 
@@ -1303,13 +1333,14 @@
         </div>
 
 
+        <!-- RISK TIERS -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
             <!-- LOW -->
-
             <div class="group bg-zinc-950/80 hover:bg-zinc-900/90 border border-zinc-900 hover:border-emerald-500/50 p-6 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-500/5 flex flex-col justify-between relative overflow-hidden">
 
                 <div class="absolute top-0 left-0 right-0 h-1 bg-emerald-500/30 group-hover:bg-emerald-500 transition-all duration-300"></div>
+
 
                 <div>
 
@@ -1325,15 +1356,18 @@
 
                     </div>
 
+
                     <h3 class="text-base font-bold text-white group-hover:text-emerald-400 transition mb-2">
                         Low Risk Tier (&lt; 30%)
                     </h3>
+
 
                     <p class="text-xs text-zinc-400 leading-relaxed mb-6">
                         Model confidence indicates standard baseline risk. Pathological intervention is generally non-urgent absent physical symptoms.
                     </p>
 
                 </div>
+
 
                 <ul class="text-xs text-zinc-300 space-y-2.5 border-t border-zinc-900/80 pt-4 font-mono">
 
@@ -1346,6 +1380,7 @@
                         </span>
 
                     </li>
+
 
                     <li class="flex items-center gap-2.5">
 
@@ -1363,10 +1398,10 @@
 
 
             <!-- MODERATE -->
-
             <div class="group bg-zinc-950/80 hover:bg-zinc-900/90 border border-zinc-900 hover:border-amber-500/50 p-6 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-amber-500/5 flex flex-col justify-between relative overflow-hidden">
 
                 <div class="absolute top-0 left-0 right-0 h-1 bg-amber-500/30 group-hover:bg-amber-500 transition-all duration-300"></div>
+
 
                 <div>
 
@@ -1382,15 +1417,18 @@
 
                     </div>
 
+
                     <h3 class="text-base font-bold text-white group-hover:text-amber-400 transition mb-2">
                         Moderate Risk Tier (30% - 70%)
                     </h3>
+
 
                     <p class="text-xs text-zinc-400 leading-relaxed mb-6">
                         Elevated probability requiring secondary evaluation. Indicates potential structural anomalies or strong familial predispositions.
                     </p>
 
                 </div>
+
 
                 <ul class="text-xs text-zinc-300 space-y-2.5 border-t border-zinc-900/80 pt-4 font-mono">
 
@@ -1403,6 +1441,7 @@
                         </span>
 
                     </li>
+
 
                     <li class="flex items-center gap-2.5">
 
@@ -1420,10 +1459,10 @@
 
 
             <!-- HIGH -->
-
             <div class="group bg-zinc-950/80 hover:bg-zinc-900/90 border border-zinc-900 hover:border-pink-500/50 p-6 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-pink-500/10 flex flex-col justify-between relative overflow-hidden">
 
                 <div class="absolute top-0 left-0 right-0 h-1 bg-pink-500/30 group-hover:bg-pink-500 transition-all duration-300"></div>
+
 
                 <div>
 
@@ -1439,15 +1478,18 @@
 
                     </div>
 
+
                     <h3 class="text-base font-bold text-white group-hover:text-pink-400 transition mb-2">
                         High Risk Tier (&gt; 70%)
                     </h3>
+
 
                     <p class="text-xs text-zinc-400 leading-relaxed mb-6">
                         Strong positive predictive model output. Prioritized clinical workflow routing recommended for diagnostic verification.
                     </p>
 
                 </div>
+
 
                 <ul class="text-xs text-zinc-300 space-y-2.5 border-t border-zinc-900/80 pt-4 font-mono">
 
@@ -1460,6 +1502,7 @@
                         </span>
 
                     </li>
+
 
                     <li class="flex items-center gap-2.5">
 
@@ -1490,12 +1533,12 @@
 
         <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-24 bg-pink-600/5 blur-[100px] pointer-events-none"></div>
 
+
         <div class="max-w-7xl mx-auto px-6 relative z-10">
 
             <div class="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-zinc-900">
 
                 <!-- BRAND -->
-
                 <div class="md:col-span-5 space-y-4">
 
                     <div class="flex items-center space-x-3">
@@ -1509,6 +1552,7 @@
                         </span>
 
                     </div>
+
 
                     <div class="bg-black/80 border border-zinc-900 p-3.5 rounded-xl space-y-2">
 
@@ -1524,11 +1568,13 @@
 
                         </div>
 
+
                         <p class="text-sm font-bold text-white tracking-wide">
                             Mobeen Fatima
                         </p>
 
-                        <div class="flex flex-wrap gap-1.5">
+
+                        <div class="flex flex-wrap gap-1.5 pt-1">
 
                             <span class="px-2 py-0.5 rounded bg-pink-500/10 border border-pink-500/20 text-pink-300 text-[10px] font-mono">
                                 System Builder
@@ -1546,9 +1592,11 @@
 
                     </div>
 
+
                     <p class="text-zinc-400 text-xs leading-relaxed">
                         High-precision machine learning diagnostic system focused on synthetic pipeline validation, LightGBM calibration, and explainable oncology risk modeling.
                     </p>
+
 
                     <div class="flex items-center gap-3 pt-1">
 
@@ -1560,6 +1608,7 @@
 
                         </span>
 
+
                         <span class="text-[11px] font-mono text-zinc-500">
                             v1.0 Enterprise Edition
                         </span>
@@ -1570,38 +1619,50 @@
 
 
                 <!-- QUICK LINKS -->
-
                 <div class="md:col-span-3 space-y-3">
 
                     <p class="text-xs font-semibold text-white uppercase tracking-wider font-mono">
                         Quick Workspace
                     </p>
 
+
                     <ul class="space-y-2 text-zinc-400">
 
                         <li>
-                            <a href="#hero" class="hover:text-pink-400 transition flex items-center gap-1.5">
+                            <a
+                                href="#hero"
+                                class="hover:text-pink-400 transition flex items-center gap-1.5"
+                            >
                                 <span>→</span>
                                 Platform Overview
                             </a>
                         </li>
 
                         <li>
-                            <a href="#dashboard" class="hover:text-pink-400 transition flex items-center gap-1.5">
+                            <a
+                                href="#dashboard"
+                                class="hover:text-pink-400 transition flex items-center gap-1.5"
+                            >
                                 <span>→</span>
                                 Diagnostic Dashboard
                             </a>
                         </li>
 
                         <li>
-                            <a href="#metrics" class="hover:text-pink-400 transition flex items-center gap-1.5">
+                            <a
+                                href="#metrics"
+                                class="hover:text-pink-400 transition flex items-center gap-1.5"
+                            >
                                 <span>→</span>
                                 Model Validation Metrics
                             </a>
                         </li>
 
                         <li>
-                            <a href="#guidelines" class="hover:text-pink-400 transition flex items-center gap-1.5">
+                            <a
+                                href="#guidelines"
+                                class="hover:text-pink-400 transition flex items-center gap-1.5"
+                            >
                                 <span>→</span>
                                 Clinical Protocol Guidelines
                             </a>
@@ -1613,15 +1674,16 @@
 
 
                 <!-- SOCIAL -->
-
                 <div class="md:col-span-4 space-y-3">
 
                     <p class="text-xs font-semibold text-white uppercase tracking-wider font-mono">
                         Mobeen's Channels
                     </p>
 
+
                     <div class="grid grid-cols-1 gap-2.5">
 
+                        <!-- GITHUB -->
                         <a
                             href="https://github.com/MobeenFatimaa"
                             target="_blank"
@@ -1647,6 +1709,7 @@
 
                                 </div>
 
+
                                 <div>
 
                                     <p class="text-xs font-medium text-white group-hover:text-pink-400 transition">
@@ -1660,6 +1723,7 @@
                                 </div>
 
                             </div>
+
 
                             <svg
                                 class="w-3.5 h-3.5 text-zinc-600 group-hover:text-pink-400 group-hover:translate-x-1 transition"
@@ -1678,6 +1742,7 @@
                         </a>
 
 
+                        <!-- LINKEDIN -->
                         <a
                             href="https://www.linkedin.com/in/mobeen-fatima-599a35347/"
                             target="_blank"
@@ -1699,6 +1764,7 @@
 
                                 </div>
 
+
                                 <div>
 
                                     <p class="text-xs font-medium text-white group-hover:text-pink-400 transition">
@@ -1712,6 +1778,7 @@
                                 </div>
 
                             </div>
+
 
                             <svg
                                 class="w-3.5 h-3.5 text-zinc-600 group-hover:text-pink-400 group-hover:translate-x-1 transition"
@@ -1730,6 +1797,7 @@
                         </a>
 
 
+                        <!-- KAGGLE -->
                         <a
                             href="https://www.kaggle.com/mobeenfatimah"
                             target="_blank"
@@ -1742,6 +1810,7 @@
                                 <div class="w-8 h-8 rounded-lg bg-zinc-900 group-hover:bg-pink-600/20 border border-zinc-800 group-hover:border-pink-500/40 flex items-center justify-center text-zinc-300 group-hover:text-pink-400 transition font-bold font-mono text-sm">
                                     K
                                 </div>
+
 
                                 <div>
 
@@ -1756,6 +1825,7 @@
                                 </div>
 
                             </div>
+
 
                             <svg
                                 class="w-3.5 h-3.5 text-zinc-600 group-hover:text-pink-400 group-hover:translate-x-1 transition"
@@ -1781,7 +1851,6 @@
 
 
             <!-- COPYRIGHT -->
-
             <div class="pt-8 flex flex-col md:flex-row items-center justify-between text-zinc-500 gap-4">
 
                 <p>
@@ -1791,6 +1860,7 @@
                         Mobeen Fatima
                     </span>.
                 </p>
+
 
                 <div class="flex items-center space-x-6">
 
@@ -1820,12 +1890,12 @@
     >
 
         <!-- CHAT WINDOW -->
-
         <div
             id="ai-chat-box"
-            class="hidden w-[calc(100vw-3rem)] sm:w-[400px] h-[500px] max-h-[80vh] bg-zinc-950/95 backdrop-blur-xl border border-zinc-800 rounded-2xl shadow-2xl shadow-pink-500/10 flex-col overflow-hidden mb-4 transition-all duration-300 transform scale-95 opacity-0 origin-bottom-right"
+            class="hidden w-[calc(100vw-3rem)] sm:w-[400px] h-[500px] max-h-[80vh] bg-zinc-950/95 backdrop-blur-xl border border-zinc-800 rounded-2xl shadow-2xl shadow-pink-500/10 flex flex-col overflow-hidden mb-4 transition-all duration-300 transform scale-95 opacity-0 origin-bottom-right"
         >
 
+            <!-- HEADER -->
             <div class="p-4 bg-zinc-900/80 border-b border-zinc-800 flex items-center justify-between shrink-0">
 
                 <div class="flex items-center gap-3">
@@ -1839,6 +1909,7 @@
                         <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-zinc-950 absolute -bottom-0.5 -right-0.5"></span>
 
                     </div>
+
 
                     <div>
 
@@ -1859,6 +1930,7 @@
                     </div>
 
                 </div>
+
 
                 <button
                     id="close-chat-btn"
@@ -1886,16 +1958,19 @@
             </div>
 
 
+            <!-- MESSAGES -->
             <div
                 id="chat-messages"
                 class="flex-1 min-h-0 p-4 overflow-y-auto space-y-3.5 text-xs custom-scrollbar"
             >
 
+                <!-- WELCOME -->
                 <div class="flex gap-2.5 items-start">
 
                     <div class="w-6 h-6 rounded-lg bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-pink-400 text-[10px] font-bold shrink-0 mt-0.5">
                         AI
                     </div>
+
 
                     <div class="bg-zinc-900 border border-zinc-800 text-zinc-300 p-3 rounded-2xl rounded-tl-xs max-w-[85%] leading-relaxed">
 
@@ -1908,6 +1983,7 @@
                 </div>
 
 
+                <!-- SUGGESTIONS -->
                 <div
                     id="suggested-queries"
                     class="flex flex-wrap gap-1.5 pt-1 pl-8"
@@ -1920,6 +1996,7 @@
                     >
                         💡 How model predicts risk?
                     </button>
+
 
                     <button
                         type="button"
@@ -1934,6 +2011,7 @@
             </div>
 
 
+            <!-- INPUT -->
             <div class="p-3 border-t border-zinc-800/80 bg-zinc-900/90 shrink-0">
 
                 <form
@@ -1948,6 +2026,7 @@
                         autocomplete="off"
                         class="flex-1 bg-black/80 border border-zinc-800 focus:border-pink-500/60 text-xs text-white placeholder-zinc-500 px-3 py-2 rounded-xl focus:outline-none transition"
                     >
+
 
                     <button
                         type="submit"
@@ -1979,7 +2058,6 @@
 
 
         <!-- FLOATING BUTTON -->
-
         <button
             id="toggle-chat-btn"
             type="button"
@@ -1989,6 +2067,7 @@
         >
 
             <span class="absolute -inset-1 rounded-2xl bg-pink-500/30 group-hover:bg-pink-500/50 blur-sm transition animate-pulse"></span>
+
 
             <svg
                 id="chat-icon-open"
@@ -2004,6 +2083,7 @@
                     d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
                 />
             </svg>
+
 
             <svg
                 id="chat-icon-close"
@@ -2023,58 +2103,6 @@
         </button>
 
     </div>
-
-
-    <!-- ========================================================= -->
-    <!-- FEATURE COUNT FIX -->
-    <!-- ========================================================= -->
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-
-            const featureContainer = document.getElementById("featureContainer");
-            const featureCount = document.getElementById("featureCount");
-            const emptyFeatureState = document.getElementById("emptyFeatureState");
-
-            if (!featureContainer || !featureCount) {
-                return;
-            }
-
-            /*
-             * IMPORTANT:
-             * Do not rely on {{ features|length }} here.
-             *
-             * The counter is calculated from the actual feature
-             * elements rendered inside the page.
-             */
-            const renderedFeatures = featureContainer.querySelectorAll(".feature-item");
-
-            const count = renderedFeatures.length;
-
-            if (count > 0) {
-
-                featureCount.textContent = count;
-
-                if (emptyFeatureState) {
-                    emptyFeatureState.remove();
-                }
-
-            } else {
-
-                /*
-                 * Never leave the UI showing:
-                 *
-                 * Total Features: 0
-                 *
-                 * Instead show a meaningful backend/model status.
-                 */
-                featureCount.textContent = "Model Pending";
-                featureCount.classList.add("text-amber-400");
-
-            }
-
-        });
-    </script>
 
 
     <!-- ========================================================= -->
