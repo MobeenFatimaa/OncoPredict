@@ -3,773 +3,2113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>OncoPredict — Advanced Clinical Intelligence Platform</title>
+
+    <meta
+        name="description"
+        content="OncoPredict is an AI-powered clinical decision support platform for breast cancer risk assessment."
+    >
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #000000; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #27272a; border-radius: 9999px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #ec4899; }
-        
-        @keyframes pulseGlow {
-            0%, 100% { opacity: 0.4; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.05); }
+        body {
+            font-family: 'Inter', sans-serif;
         }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #000000;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 9999px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #ec4899;
+        }
+
+        @keyframes pulseGlow {
+            0%,
+            100% {
+                opacity: 0.4;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: scale(1.05);
+            }
+        }
+
         .hero-glow {
             animation: pulseGlow 8s infinite ease-in-out;
         }
+
+        input[type="range"] {
+            accent-color: #ec4899;
+        }
+
+        ::selection {
+            background: #ec4899;
+            color: white;
+        }
     </style>
 </head>
-<body class="bg-black text-zinc-100 min-h-screen flex flex-col font-sans selection:bg-pink-500 selection:text-white">
 
-    <!-- Global Navigation Header -->
+<body class="bg-black text-zinc-100 min-h-screen flex flex-col font-sans">
+
+    <!-- ========================================================= -->
+    <!-- GLOBAL NAVIGATION -->
+    <!-- ========================================================= -->
+
     <header class="border-b border-zinc-900 bg-black/80 backdrop-blur-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+
             <div class="flex items-center space-x-3">
                 <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-pink-600 to-rose-500 flex items-center justify-center font-bold text-white shadow-lg shadow-pink-500/20 text-lg">
                     OP
                 </div>
+
                 <div>
                     <span class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
-                        OncoPredict 
-                        <span class="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full border border-pink-500/30 bg-pink-500/10 text-pink-400">Enterprise v1.0</span>
+                        OncoPredict
+
+                        <span class="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full border border-pink-500/30 bg-pink-500/10 text-pink-400">
+                            Enterprise v1.0
+                        </span>
                     </span>
                 </div>
             </div>
 
-            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-zinc-400" id="globalNav">
-                <a href="#hero" class="nav-link text-pink-400 transition hover:text-pink-300">Overview</a>
-                <a href="#dashboard" class="nav-link hover:text-zinc-200 transition">Diagnostic Dashboard</a>
-                <a href="#metrics" class="nav-link hover:text-zinc-200 transition">Model Metrics</a>
-                <a href="#guidelines" class="nav-link hover:text-zinc-200 transition">Clinical Guidelines</a>
+            <nav
+                class="hidden md:flex items-center space-x-8 text-sm font-medium text-zinc-400"
+                id="globalNav"
+            >
+                <a
+                    href="#hero"
+                    class="nav-link text-pink-400 transition hover:text-pink-300"
+                >
+                    Overview
+                </a>
+
+                <a
+                    href="#dashboard"
+                    class="nav-link hover:text-zinc-200 transition"
+                >
+                    Diagnostic Dashboard
+                </a>
+
+                <a
+                    href="#metrics"
+                    class="nav-link hover:text-zinc-200 transition"
+                >
+                    Model Metrics
+                </a>
+
+                <a
+                    href="#guidelines"
+                    class="nav-link hover:text-zinc-200 transition"
+                >
+                    Clinical Guidelines
+                </a>
             </nav>
 
             <div class="flex items-center gap-3">
-                <button type="button" id="fillDefaultsBtn" class="text-xs font-medium bg-zinc-900 hover:bg-zinc-800 text-pink-300 border border-zinc-800 hover:border-pink-500/40 px-3.5 py-2 rounded-xl transition flex items-center gap-2">
-                    <svg class="w-3.5 h-3.5 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                <button
+                    type="button"
+                    id="fillDefaultsBtn"
+                    class="text-xs font-medium bg-zinc-900 hover:bg-zinc-800 text-pink-300 border border-zinc-800 hover:border-pink-500/40 px-3.5 py-2 rounded-xl transition flex items-center gap-2"
+                >
+                    <svg
+                        class="w-3.5 h-3.5 text-pink-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M13 10V3L4 14h7v7l9-11h-7z"
+                        />
+                    </svg>
+
                     Autofill Sample Data
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Interactive Hero Section -->
-    <section id="hero" class="relative overflow-hidden border-b border-zinc-900 bg-gradient-to-b from-zinc-950 via-black to-black py-16 md:py-24">
-        <!-- Background Ambient Glow Effects -->
+
+    <!-- ========================================================= -->
+    <!-- HERO SECTION -->
+    <!-- ========================================================= -->
+
+    <section
+        id="hero"
+        class="relative overflow-hidden border-b border-zinc-900 bg-gradient-to-b from-zinc-950 via-black to-black py-16 md:py-24"
+    >
+
         <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-pink-600/15 rounded-full blur-[120px] pointer-events-none hero-glow"></div>
+
         <div class="absolute top-20 -right-20 w-80 h-80 bg-rose-600/10 rounded-full blur-[100px] pointer-events-none"></div>
 
+
         <div class="max-w-7xl mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            
-            <!-- Hero Left Column -->
+
+            <!-- HERO LEFT -->
             <div class="lg:col-span-7 space-y-6">
+
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-pink-500/20 bg-pink-500/10 text-pink-400 text-xs font-mono">
+
                     <span class="flex h-2 w-2 relative">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-pink-500"></span>
                     </span>
+
                     Precision Oncology AI Engine
                 </div>
 
+
                 <h1 class="text-4xl md:text-6xl font-extrabold text-white tracking-tight leading-[1.1]">
-                    Next-Gen Clinical Risk Assessment <span class="bg-gradient-to-r from-pink-500 via-rose-400 to-pink-300 bg-clip-text text-transparent">Accelerated by LightGBM.</span>
+                    Next-Gen Clinical Risk Assessment
+
+                    <span class="bg-gradient-to-r from-pink-500 via-rose-400 to-pink-300 bg-clip-text text-transparent">
+                        Accelerated by LightGBM.
+                    </span>
                 </h1>
+
 
                 <p class="text-sm md:text-base text-zinc-400 max-w-2xl leading-relaxed">
                     OncoPredict integrates high-dimensional pathology metrics and patient lifestyle demographics to deliver fast, explainable malignancy risk scoring for modern oncology teams.
                 </p>
 
+
                 <div class="flex flex-wrap items-center gap-4 pt-2">
-                    <a href="#dashboard" class="bg-pink-600 hover:bg-pink-500 text-white font-medium text-xs md:text-sm px-6 py-3.5 rounded-xl transition shadow-lg shadow-pink-600/25 flex items-center gap-2 group">
+
+                    <a
+                        href="#dashboard"
+                        class="bg-pink-600 hover:bg-pink-500 text-white font-medium text-xs md:text-sm px-6 py-3.5 rounded-xl transition shadow-lg shadow-pink-600/25 flex items-center gap-2 group"
+                    >
                         <span>Launch Diagnostic Evaluation</span>
-                        <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+
+                        <svg
+                            class="w-4 h-4 transform group-hover:translate-x-1 transition"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M14 5l7 7m0 0l-7 7m7-7H3"
+                            />
+                        </svg>
                     </a>
-                    <a href="#metrics" class="bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 hover:border-zinc-700 text-xs md:text-sm px-5 py-3.5 rounded-xl transition flex items-center gap-2">
+
+
+                    <a
+                        href="#metrics"
+                        class="bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 hover:border-zinc-700 text-xs md:text-sm px-5 py-3.5 rounded-xl transition flex items-center gap-2"
+                    >
                         View Model Validation
                     </a>
+
                 </div>
 
-                <!-- Quick Telemetry Stats Strip -->
+
+                <!-- TELEMETRY -->
                 <div class="grid grid-cols-3 gap-4 pt-6 border-t border-zinc-900/80 max-w-lg">
+
                     <div>
-                        <p class="text-[10px] uppercase font-mono tracking-wider text-zinc-500">Inference Latency</p>
-                        <p class="text-base font-bold text-white font-mono mt-0.5">&lt; 15 ms</p>
+                        <p class="text-[10px] uppercase font-mono tracking-wider text-zinc-500">
+                            Inference Latency
+                        </p>
+
+                        <p class="text-base font-bold text-white font-mono mt-0.5">
+                            &lt; 15 ms
+                        </p>
                     </div>
+
+
                     <div>
-                        <p class="text-[10px] uppercase font-mono tracking-wider text-zinc-500">Validation ROC</p>
-                        <p class="text-base font-bold text-pink-400 font-mono mt-0.5">0.964 AUC</p>
+                        <p class="text-[10px] uppercase font-mono tracking-wider text-zinc-500">
+                            Validation ROC
+                        </p>
+
+                        <p class="text-base font-bold text-pink-400 font-mono mt-0.5">
+                            0.964 AUC
+                        </p>
                     </div>
+
+
                     <div>
-                        <p class="text-[10px] uppercase font-mono tracking-wider text-zinc-500">Architecture</p>
-                        <p class="text-base font-bold text-white font-mono mt-0.5">Gradient Boosted</p>
+                        <p class="text-[10px] uppercase font-mono tracking-wider text-zinc-500">
+                            Architecture
+                        </p>
+
+                        <p class="text-base font-bold text-white font-mono mt-0.5">
+                            Gradient Boosted
+                        </p>
                     </div>
+
                 </div>
+
             </div>
 
-            <!-- Hero Right Column -->
+
+            <!-- HERO RIGHT / SIMULATOR -->
             <div class="lg:col-span-5">
+
                 <div class="bg-zinc-950/90 border border-zinc-800/80 rounded-2xl p-6 shadow-2xl relative backdrop-blur-xl">
+
                     <div class="flex items-center justify-between pb-4 border-b border-zinc-900 mb-5">
+
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-pink-500"></span>
-                            <span class="text-xs font-semibold text-white">Live Simulator Playground</span>
+
+                            <span class="text-xs font-semibold text-white">
+                                Live Simulator Playground
+                            </span>
                         </div>
-                        <span class="text-[10px] font-mono bg-zinc-900 text-zinc-400 border border-zinc-800 px-2 py-0.5 rounded">Interactive Preview</span>
+
+                        <span class="text-[10px] font-mono bg-zinc-900 text-zinc-400 border border-zinc-800 px-2 py-0.5 rounded">
+                            Interactive Preview
+                        </span>
+
                     </div>
+
 
                     <div class="space-y-5">
+
+                        <!-- TUMOR SIZE -->
                         <div>
+
                             <div class="flex justify-between text-xs mb-2">
-                                <label for="simTumorSize" class="text-zinc-300 font-medium">Simulated Tumor Diameter: <span id="simTumorVal" class="text-pink-400 font-mono">2.4 cm</span></label>
+
+                                <label
+                                    for="simTumorSize"
+                                    class="text-zinc-300 font-medium"
+                                >
+                                    Simulated Tumor Diameter:
+
+                                    <span
+                                        id="simTumorVal"
+                                        class="text-pink-400 font-mono"
+                                    >
+                                        2.4 cm
+                                    </span>
+                                </label>
+
                             </div>
-                            <input type="range" id="simTumorSize" min="0.5" max="6.0" step="0.1" value="2.4" 
-                                   class="w-full accent-pink-500 bg-zinc-900 rounded-lg cursor-pointer h-2">
+
+
+                            <input
+                                type="range"
+                                id="simTumorSize"
+                                min="0.5"
+                                max="6.0"
+                                step="0.1"
+                                value="2.4"
+                                class="w-full bg-zinc-900 rounded-lg cursor-pointer h-2"
+                            >
+
                         </div>
 
+
+                        <!-- BIOPSY -->
                         <div>
+
                             <div class="flex justify-between text-xs mb-2">
-                                <label for="simBiopsyScore" class="text-zinc-300 font-medium">Pathology Grade Intensity: <span id="simBiopsyVal" class="text-pink-400 font-mono">Stage 2</span></label>
+
+                                <label
+                                    for="simBiopsyScore"
+                                    class="text-zinc-300 font-medium"
+                                >
+                                    Pathology Grade Intensity:
+
+                                    <span
+                                        id="simBiopsyVal"
+                                        class="text-pink-400 font-mono"
+                                    >
+                                        Stage 2
+                                    </span>
+                                </label>
+
                             </div>
-                            <input type="range" id="simBiopsyScore" min="1" max="4" step="1" value="2" 
-                                   class="w-full accent-pink-500 bg-zinc-900 rounded-lg cursor-pointer h-2">
+
+
+                            <input
+                                type="range"
+                                id="simBiopsyScore"
+                                min="1"
+                                max="4"
+                                step="1"
+                                value="2"
+                                class="w-full bg-zinc-900 rounded-lg cursor-pointer h-2"
+                            >
+
                         </div>
 
+
+                        <!-- SIMULATION RESULT -->
                         <div class="bg-black/90 border border-zinc-800 p-4 rounded-xl space-y-3">
+
                             <div class="flex justify-between items-center text-xs">
-                                <span class="text-zinc-400">Simulated Malignancy Probability</span>
-                                <span id="simRiskPercent" class="font-mono font-bold text-pink-400 text-base">42%</span>
+
+                                <span class="text-zinc-400">
+                                    Simulated Malignancy Probability
+                                </span>
+
+                                <span
+                                    id="simRiskPercent"
+                                    class="font-mono font-bold text-pink-400 text-base"
+                                >
+                                    43%
+                                </span>
+
                             </div>
+
+
                             <div class="w-full bg-zinc-900 h-2.5 rounded-full overflow-hidden border border-zinc-800">
-                                <div id="simRiskBar" class="bg-gradient-to-r from-pink-600 to-rose-500 h-full w-[42%] transition-all duration-300"></div>
+
+                                <div
+                                    id="simRiskBar"
+                                    class="bg-gradient-to-r from-pink-600 to-rose-500 h-full transition-all duration-300"
+                                    style="width: 43%;"
+                                ></div>
+
                             </div>
+
+
                             <div class="flex justify-between items-center text-[11px] text-zinc-500 pt-1">
-                                <span>Suggested Tier: <strong id="simTier" class="text-amber-400 font-medium">Moderate Priority</strong></span>
-                                <span class="font-mono text-[10px]">Realtime Calc</span>
+
+                                <span>
+                                    Suggested Tier:
+
+                                    <strong
+                                        id="simTier"
+                                        class="text-amber-400 font-medium"
+                                    >
+                                        Moderate Priority
+                                    </strong>
+                                </span>
+
+                                <span class="font-mono text-[10px]">
+                                    Realtime Calc
+                                </span>
+
                             </div>
+
                         </div>
+
                     </div>
+
                 </div>
+
             </div>
 
         </div>
     </section>
 
-    <!-- Main Operational Workspace -->
-    <main id="dashboard" class="flex-1 max-w-7xl w-full mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 pt-8">
-        
-     <!-- Input Form Panel -->
-<!-- Input Form Panel -->
-<section class="lg:col-span-7 bg-zinc-950/80 border border-zinc-900 rounded-2xl p-6 shadow-2xl flex flex-col justify-between backdrop-blur-sm">
-    <div>
-        <!-- Header Bar -->
-        <div class="flex items-center justify-between pb-4 mb-6 border-b border-zinc-900">
+
+    <!-- ========================================================= -->
+    <!-- MAIN DASHBOARD -->
+    <!-- ========================================================= -->
+
+    <main
+        id="dashboard"
+        class="flex-1 max-w-7xl w-full mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 pt-8"
+    >
+
+        <!-- ===================================================== -->
+        <!-- INPUT FORM -->
+        <!-- ===================================================== -->
+
+        <section
+            class="lg:col-span-7 bg-zinc-950/80 border border-zinc-900 rounded-2xl p-6 shadow-2xl flex flex-col justify-between backdrop-blur-sm"
+        >
+
             <div>
-                <h2 class="text-lg font-bold text-white tracking-tight flex items-center gap-2">
-                    Patient Assessment Parameters
-                </h2>
-                <p class="text-xs text-zinc-400 mt-0.5">Input verified clinical diagnostic indicators below.</p>
-            </div>
-            <span class="text-xs font-mono bg-pink-500/10 text-pink-400 border border-pink-500/20 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
-                <span class="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse"></span>
-                Total Features: {{ features|length }}
-            </span>
-        </div>
 
-        <!-- Input Category Tabs -->
-        <div class="flex space-x-2 border-b border-zinc-900 mb-6 pb-2" id="formTabs">
-            <button type="button" data-filter="all" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-pink-600 text-white shadow-md shadow-pink-600/20 transition-all duration-150">All Inputs</button>
-            <button type="button" data-filter="clinical" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white hover:bg-zinc-900 transition-all duration-150">Clinical Tests</button>
-            <button type="button" data-filter="lifestyle" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white hover:bg-zinc-900 transition-all duration-150">Lifestyle & Demographics</button>
-        </div>
-
-        <form id="predictForm">
-            <!-- Scrollable Inputs Grid with Theme-Matching Scrollbar -->
-            <div id="featureContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[500px] overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-zinc-950 [&::-webkit-scrollbar-thumb]:bg-zinc-800 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-pink-600">
-                {% for feature in features %}
-                <div class="feature-item flex flex-col justify-end bg-zinc-900/40 p-3 rounded-xl border border-zinc-900/80 hover:border-zinc-800 transition-colors" 
-                     data-category="{% if 'Age' in feature or 'Gender' in feature or 'BMI' in feature or 'Activity' in feature or 'Smok' in feature or 'Alcohol' in feature or 'Diet' in feature or 'Genetic' in feature or 'History' in feature or 'Menopause' in feature %}lifestyle{% else %}clinical{% endif %}">
-                    
-                    <!-- Clean Label Processing (Strips _Yes, _Male, _High, _Low, etc.) -->
-                    <label for="{{ feature }}" class="block text-xs font-medium text-zinc-300 mb-1.5 capitalize tracking-wide">
-                        {{ feature.replace('_Yes', '').replace('_Male', '').replace('_High', '').replace('_Low', '').replace('_', ' ') }}
-                    </label>
-
-                    {% if feature.endswith('_Yes') or feature.endswith('_Male') or 'Biopsy' in feature or 'Mammogram' in feature or 'Menopause' in feature or 'Activity' in feature or 'Genetic' in feature %}
-                        <!-- Custom Theme-Styled Dropdown Arrow -->
-                        <select name="{{ feature }}" id="{{ feature }}" required
-                            class="w-full bg-black/80 border border-zinc-800 rounded-xl px-3 py-2 pr-8 text-xs text-zinc-100 focus:outline-none focus:border-pink-500/80 focus:ring-1 focus:ring-pink-500/80 transition cursor-pointer appearance-none bg-[url('data:image/svg+xml;choice,width=24,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20fill=%22none%22%20viewBox=%220%200%2024%2024%22%20stroke=%22%23ec4899%22%3E%3Cpath%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%20stroke-width=%222%22%20d=%22M19%209l-7%207-7-7%22/%3E%3C/svg%3E')] bg-[length:1rem_1rem] bg-[right_0.75rem_center] bg-no-repeat">
-                            <option value="1" class="bg-zinc-950 text-zinc-200">Yes / Positive</option>
-                            <option value="0" selected class="bg-zinc-950 text-zinc-200">No / Negative</option>
-                        </select>
-                    {% else %}
-                        <!-- Custom Theme-Cleaned Number Input (Hides browser default grey arrows) -->
-                        <input type="number" step="any" name="{{ feature }}" id="{{ feature }}" required
-                            placeholder="{% if 'Age' in feature %}52{% elif 'BMI' in feature %}24.5{% elif 'Tumor' in feature %}1.5{% elif 'Pressure' in feature %}120{% elif 'Cholesterol' in feature %}180{% else %}0.0{% endif %}"
-                            class="w-full bg-black/80 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-pink-500/80 focus:ring-1 focus:ring-pink-500/80 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
-                    {% endif %}
-                </div>
-                {% endfor %}
-            </div>
-
-            <!-- Submit Action Bar -->
-            <div class="mt-6 pt-4 border-t border-zinc-900">
-                <button type="submit" id="submitBtn" 
-                    class="w-full bg-pink-600 hover:bg-pink-500 active:scale-[0.99] text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-lg shadow-pink-600/20 flex justify-center items-center gap-2 text-xs">
-                    <span>Execute Diagnostic Assessment</span>
-                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                </button>
-            </div>
-        </form>
-    </div>
-</section>
-
-        <!-- Dynamic Results Panel -->
-        <section class="lg:col-span-5 bg-zinc-950/80 border border-zinc-900 rounded-2xl p-6 shadow-2xl flex flex-col justify-between">
-            <div>
                 <div class="flex items-center justify-between pb-4 mb-6 border-b border-zinc-900">
-                    <h2 class="text-lg font-bold text-white">Diagnostic Inference</h2>
-                    <span class="flex h-2 w-2 relative">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-pink-500"></span>
+
+                    <div>
+
+                        <h2 class="text-lg font-bold text-white tracking-tight">
+                            Patient Assessment Parameters
+                        </h2>
+
+                        <p class="text-xs text-zinc-400 mt-0.5">
+                            Input verified clinical diagnostic indicators below.
+                        </p>
+
+                    </div>
+
+
+                    <span class="text-xs font-mono bg-pink-500/10 text-pink-400 border border-pink-500/20 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+
+                        <span class="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse"></span>
+
+                        Total Features: {{ features|length }}
+
                     </span>
+
                 </div>
 
-                <!-- Idle Placeholder -->
-                <div id="idleState" class="text-center py-20 border border-dashed border-zinc-900 rounded-2xl bg-black/60">
+
+                <!-- FORM TABS -->
+                <div
+                    class="flex flex-wrap gap-2 border-b border-zinc-900 mb-6 pb-2"
+                    id="formTabs"
+                >
+
+                    <button
+                        type="button"
+                        data-filter="all"
+                        class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-pink-600 text-white shadow-md shadow-pink-600/20 transition-all duration-150"
+                    >
+                        All Inputs
+                    </button>
+
+                    <button
+                        type="button"
+                        data-filter="clinical"
+                        class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white hover:bg-zinc-900 transition-all duration-150"
+                    >
+                        Clinical Tests
+                    </button>
+
+                    <button
+                        type="button"
+                        data-filter="lifestyle"
+                        class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-white hover:bg-zinc-900 transition-all duration-150"
+                    >
+                        Lifestyle & Demographics
+                    </button>
+
+                </div>
+
+
+                <form id="predictForm">
+
+                    <!-- FEATURE GRID -->
+                    <div
+                        id="featureContainer"
+                        class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar"
+                    >
+
+                        {% for feature in features %}
+
+                        <div
+                            class="feature-item flex flex-col justify-end bg-zinc-900/40 p-3 rounded-xl border border-zinc-900/80 hover:border-zinc-800 transition-colors"
+                            data-category="{% if 'Age' in feature or 'Gender' in feature or 'BMI' in feature or 'Activity' in feature or 'Smok' in feature or 'Alcohol' in feature or 'Diet' in feature or 'Genetic' in feature or 'History' in feature or 'Menopause' in feature %}lifestyle{% else %}clinical{% endif %}"
+                        >
+
+                            <label
+                                for="{{ feature }}"
+                                class="block text-xs font-medium text-zinc-300 mb-1.5 capitalize tracking-wide"
+                            >
+                                {{ feature.replace('_Yes', '').replace('_Male', '').replace('_High', '').replace('_Low', '').replace('_', ' ') }}
+                            </label>
+
+
+                            {% if feature.endswith('_Yes') or feature.endswith('_Male') or 'Biopsy' in feature or 'Mammogram' in feature or 'Menopause' in feature or 'Activity' in feature or 'Genetic' in feature %}
+
+                            <!-- SELECT -->
+                            <div class="relative">
+
+                                <select
+                                    name="{{ feature }}"
+                                    id="{{ feature }}"
+                                    required
+                                    class="w-full appearance-none bg-black/80 border border-zinc-800 rounded-xl px-3 py-2 pr-9 text-xs text-zinc-100 focus:outline-none focus:border-pink-500/80 focus:ring-1 focus:ring-pink-500/80 transition cursor-pointer"
+                                >
+
+                                    <option
+                                        value="1"
+                                        class="bg-zinc-950 text-zinc-200"
+                                    >
+                                        Yes / Positive
+                                    </option>
+
+                                    <option
+                                        value="0"
+                                        selected
+                                        class="bg-zinc-950 text-zinc-200"
+                                    >
+                                        No / Negative
+                                    </option>
+
+                                </select>
+
+
+                                <!-- CUSTOM ARROW -->
+                                <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+
+                                    <svg
+                                        class="w-4 h-4 text-pink-500"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M19 9l-7 7-7-7"
+                                        />
+                                    </svg>
+
+                                </div>
+
+                            </div>
+
+                            {% else %}
+
+                            <!-- NUMBER INPUT -->
+                            <input
+                                type="number"
+                                step="any"
+                                name="{{ feature }}"
+                                id="{{ feature }}"
+                                required
+                                placeholder="{% if 'Age' in feature %}52{% elif 'BMI' in feature %}24.5{% elif 'Tumor' in feature %}1.5{% elif 'Pressure' in feature %}120{% elif 'Cholesterol' in feature %}180{% else %}0.0{% endif %}"
+                                class="w-full bg-black/80 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-pink-500/80 focus:ring-1 focus:ring-pink-500/80 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            >
+
+                            {% endif %}
+
+                        </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <!-- SUBMIT -->
+                    <div class="mt-6 pt-4 border-t border-zinc-900">
+
+                        <button
+                            type="submit"
+                            id="submitBtn"
+                            class="w-full bg-pink-600 hover:bg-pink-500 active:scale-[0.99] text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-lg shadow-pink-600/20 flex justify-center items-center gap-2 text-xs"
+                        >
+
+                            <span>
+                                Execute Diagnostic Assessment
+                            </span>
+
+                            <svg
+                                class="w-4 h-4 text-white"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M14 5l7 7m0 0l-7 7m7-7H3"
+                                />
+                            </svg>
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </section>
+
+
+        <!-- ===================================================== -->
+        <!-- RESULTS -->
+        <!-- ===================================================== -->
+
+        <section
+            class="lg:col-span-5 bg-zinc-950/80 border border-zinc-900 rounded-2xl p-6 shadow-2xl flex flex-col justify-between"
+        >
+
+            <div>
+
+                <div class="flex items-center justify-between pb-4 mb-6 border-b border-zinc-900">
+
+                    <h2 class="text-lg font-bold text-white">
+                        Diagnostic Inference
+                    </h2>
+
+                    <span class="flex h-2 w-2 relative">
+
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
+
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-pink-500"></span>
+
+                    </span>
+
+                </div>
+
+
+                <!-- IDLE -->
+                <div
+                    id="idleState"
+                    class="text-center py-20 border border-dashed border-zinc-900 rounded-2xl bg-black/60"
+                >
+
                     <div class="w-12 h-12 rounded-full bg-zinc-900 flex items-center justify-center mx-auto mb-4 border border-zinc-800 text-pink-500">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+
+                        <svg
+                            class="w-6 h-6"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                            />
+                        </svg>
+
                     </div>
-                    <p class="text-sm font-medium text-zinc-300">Awaiting Patient Evaluation</p>
-                    <p class="text-xs text-zinc-500 mt-1 max-w-xs mx-auto">Fill parameters or click 'Autofill Sample Data' to generate model inference.</p>
+
+                    <p class="text-sm font-medium text-zinc-300">
+                        Awaiting Patient Evaluation
+                    </p>
+
+                    <p class="text-xs text-zinc-500 mt-1 max-w-xs mx-auto">
+                        Fill parameters or click 'Autofill Sample Data' to generate model inference.
+                    </p>
+
                 </div>
 
-                <!-- Live Results -->
-                <div id="resultBox" class="hidden space-y-6">
-                    <div id="statusBanner" class="p-5 rounded-2xl border flex flex-col items-center text-center shadow-lg transition-all">
-                        <span class="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-1">Assessment Outcome</span>
-                        <span id="resultLabel" class="text-3xl font-extrabold tracking-tight">--</span>
-                        <span id="resultSubtitle" class="text-xs mt-1.5 font-medium">--</span>
+
+                <!-- RESULT -->
+                <div
+                    id="resultBox"
+                    class="hidden space-y-6"
+                >
+
+                    <div
+                        id="statusBanner"
+                        class="p-5 rounded-2xl border flex flex-col items-center text-center shadow-lg transition-all"
+                    >
+
+                        <span class="text-xs font-semibold uppercase tracking-widest text-zinc-400 mb-1">
+                            Assessment Outcome
+                        </span>
+
+                        <span
+                            id="resultLabel"
+                            class="text-3xl font-extrabold tracking-tight"
+                        >
+                            --
+                        </span>
+
+                        <span
+                            id="resultSubtitle"
+                            class="text-xs mt-1.5 font-medium"
+                        >
+                            --
+                        </span>
+
                     </div>
+
 
                     <div class="space-y-5 bg-black p-5 rounded-2xl border border-zinc-900">
+
+                        <!-- RISK -->
                         <div>
+
                             <div class="flex justify-between text-xs font-medium mb-1.5">
-                                <span class="text-zinc-400">Malignancy Risk Level</span>
-                                <span id="riskScoreVal" class="text-pink-400 font-mono font-semibold">0%</span>
+
+                                <span class="text-zinc-400">
+                                    Malignancy Risk Level
+                                </span>
+
+                                <span
+                                    id="riskScoreVal"
+                                    class="text-pink-400 font-mono font-semibold"
+                                >
+                                    0%
+                                </span>
+
                             </div>
+
+
                             <div class="w-full bg-zinc-900 h-2.5 rounded-full overflow-hidden border border-zinc-800">
-                                <div id="riskBar" class="bg-gradient-to-r from-pink-600 to-rose-500 h-full w-0 transition-all duration-700"></div>
+
+                                <div
+                                    id="riskBar"
+                                    class="bg-gradient-to-r from-pink-600 to-rose-500 h-full w-0 transition-all duration-700"
+                                ></div>
+
                             </div>
+
                         </div>
 
+
+                        <!-- CONFIDENCE -->
                         <div>
+
                             <div class="flex justify-between text-xs font-medium mb-1.5">
-                                <span class="text-zinc-400">Model Classification Confidence</span>
-                                <span id="confidenceVal" class="text-emerald-400 font-mono font-semibold">0%</span>
+
+                                <span class="text-zinc-400">
+                                    Model Classification Confidence
+                                </span>
+
+                                <span
+                                    id="confidenceVal"
+                                    class="text-emerald-400 font-mono font-semibold"
+                                >
+                                    0%
+                                </span>
+
                             </div>
+
+
                             <div class="w-full bg-zinc-900 h-2.5 rounded-full overflow-hidden border border-zinc-800">
-                                <div id="confidenceBar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-0 transition-all duration-700"></div>
+
+                                <div
+                                    id="confidenceBar"
+                                    class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-0 transition-all duration-700"
+                                ></div>
+
                             </div>
+
                         </div>
+
                     </div>
 
-                    <div id="actionNotice" class="p-4 rounded-xl bg-black border border-zinc-900 text-xs text-zinc-300">
-                        <span class="font-semibold text-pink-400 block mb-1">Recommended Action:</span>
-                        <span id="actionText">--</span>
+
+                    <!-- ACTION -->
+                    <div
+                        id="actionNotice"
+                        class="p-4 rounded-xl bg-black border border-zinc-900 text-xs text-zinc-300"
+                    >
+
+                        <span class="font-semibold text-pink-400 block mb-1">
+                            Recommended Action:
+                        </span>
+
+                        <span id="actionText">
+                            --
+                        </span>
+
                     </div>
+
                 </div>
+
             </div>
+
 
             <div class="mt-8 pt-4 border-t border-zinc-900 text-[11px] text-zinc-600 text-center">
-                This platform utilizes Machine Learning algorithms for risk estimation. It is not a replacement for professional pathological diagnosis.
+
+                This platform utilizes Machine Learning algorithms for risk estimation.
+                It is not a replacement for professional pathological diagnosis.
+
             </div>
+
         </section>
+
     </main>
 
-<!-- Model Metrics Section -->
-    <section id="metrics" class="max-w-7xl w-full mx-auto px-6 py-16 border-t border-zinc-900/80 relative">
-        <!-- Subtle Background Glow -->
+
+    <!-- ========================================================= -->
+    <!-- MODEL METRICS -->
+    <!-- ========================================================= -->
+
+    <section
+        id="metrics"
+        class="max-w-7xl w-full mx-auto px-6 py-16 border-t border-zinc-900/80 relative"
+    >
+
         <div class="absolute inset-0 bg-gradient-to-b from-pink-500/5 via-transparent to-transparent pointer-events-none rounded-3xl"></div>
 
+
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4 relative z-10">
+
             <div>
+
                 <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full border border-pink-500/20 bg-pink-500/10 text-pink-400 text-[11px] font-mono mb-2">
+
                     <span class="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse"></span>
+
                     Validation Analytics
+
                 </div>
-                <h2 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">LightGBM Performance & Operational Metrics</h2>
-                <p class="text-xs text-zinc-400 mt-1 max-w-xl">Evaluated on cross-validated multi-center clinical datasets with continuous hyperparameter calibration.</p>
+
+
+                <h2 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+                    LightGBM Performance & Operational Metrics
+                </h2>
+
+
+                <p class="text-xs text-zinc-400 mt-1 max-w-xl">
+                    Evaluated on cross-validated multi-center clinical datasets with continuous hyperparameter calibration.
+                </p>
+
             </div>
+
+
             <div class="flex items-center gap-2">
+
                 <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-xl flex items-center gap-2 shadow-sm">
+
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+
                     Status: Calibrated & Live
+
                 </span>
+
             </div>
+
         </div>
 
-        <!-- Metric KPI Cards -->
+
+        <!-- KPI CARDS -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 relative z-10">
-            <!-- Card 1 -->
+
+            <!-- ROC -->
             <div class="group bg-zinc-950/80 hover:bg-zinc-900/90 border border-zinc-900 hover:border-pink-500/40 p-5 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-pink-500/10">
+
                 <div class="flex justify-between items-start">
-                    <p class="text-xs text-zinc-400 font-medium group-hover:text-zinc-200 transition">ROC-AUC Score</p>
+
+                    <p class="text-xs text-zinc-400 font-medium group-hover:text-zinc-200 transition">
+                        ROC-AUC Score
+                    </p>
+
                     <span class="w-2 h-2 rounded-full bg-pink-500 opacity-0 group-hover:opacity-100 transition duration-300"></span>
+
                 </div>
-                <p class="text-3xl font-extrabold text-pink-400 mt-3 font-mono tracking-tight group-hover:scale-105 transform origin-left transition duration-300">0.964</p>
+
+                <p class="text-3xl font-extrabold text-pink-400 mt-3 font-mono tracking-tight group-hover:scale-105 transform origin-left transition duration-300">
+                    0.964
+                </p>
+
                 <div class="flex items-center gap-1 mt-2 text-[10px] text-emerald-400 font-medium">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-                    <span>↑ 2.1% over baseline</span>
+
+                    <svg
+                        class="w-3 h-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                        />
+                    </svg>
+
+                    <span>
+                        ↑ 2.1% over baseline
+                    </span>
+
                 </div>
+
             </div>
 
-            <!-- Card 2 -->
+
+            <!-- SENSITIVITY -->
             <div class="group bg-zinc-950/80 hover:bg-zinc-900/90 border border-zinc-900 hover:border-pink-500/40 p-5 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-pink-500/10">
+
                 <div class="flex justify-between items-start">
-                    <p class="text-xs text-zinc-400 font-medium group-hover:text-zinc-200 transition">Sensitivity (Recall)</p>
+
+                    <p class="text-xs text-zinc-400 font-medium group-hover:text-zinc-200 transition">
+                        Sensitivity (Recall)
+                    </p>
+
                     <span class="w-2 h-2 rounded-full bg-pink-500 opacity-0 group-hover:opacity-100 transition duration-300"></span>
+
                 </div>
-                <p class="text-3xl font-extrabold text-white mt-3 font-mono tracking-tight group-hover:scale-105 transform origin-left transition duration-300">94.8%</p>
-                <p class="text-[10px] text-zinc-500 mt-2">Low false negatives rate</p>
+
+                <p class="text-3xl font-extrabold text-white mt-3 font-mono tracking-tight group-hover:scale-105 transform origin-left transition duration-300">
+                    94.8%
+                </p>
+
+                <p class="text-[10px] text-zinc-500 mt-2">
+                    Low false negatives rate
+                </p>
+
             </div>
 
-            <!-- Card 3 -->
+
+            <!-- PRECISION -->
             <div class="group bg-zinc-950/80 hover:bg-zinc-900/90 border border-zinc-900 hover:border-pink-500/40 p-5 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-pink-500/10">
+
                 <div class="flex justify-between items-start">
-                    <p class="text-xs text-zinc-400 font-medium group-hover:text-zinc-200 transition">Diagnostic Precision</p>
+
+                    <p class="text-xs text-zinc-400 font-medium group-hover:text-zinc-200 transition">
+                        Diagnostic Precision
+                    </p>
+
                     <span class="w-2 h-2 rounded-full bg-pink-500 opacity-0 group-hover:opacity-100 transition duration-300"></span>
+
                 </div>
-                <p class="text-3xl font-extrabold text-pink-500 mt-3 font-mono tracking-tight group-hover:scale-105 transform origin-left transition duration-300">92.3%</p>
-                <p class="text-[10px] text-zinc-500 mt-2">Positive predictive value</p>
+
+                <p class="text-3xl font-extrabold text-pink-500 mt-3 font-mono tracking-tight group-hover:scale-105 transform origin-left transition duration-300">
+                    92.3%
+                </p>
+
+                <p class="text-[10px] text-zinc-500 mt-2">
+                    Positive predictive value
+                </p>
+
             </div>
 
-            <!-- Card 4 -->
+
+            <!-- LATENCY -->
             <div class="group bg-zinc-950/80 hover:bg-zinc-900/90 border border-zinc-900 hover:border-pink-500/40 p-5 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-pink-500/10">
+
                 <div class="flex justify-between items-start">
-                    <p class="text-xs text-zinc-400 font-medium group-hover:text-zinc-200 transition">Inference Latency</p>
+
+                    <p class="text-xs text-zinc-400 font-medium group-hover:text-zinc-200 transition">
+                        Inference Latency
+                    </p>
+
                     <span class="w-2 h-2 rounded-full bg-pink-500 opacity-0 group-hover:opacity-100 transition duration-300"></span>
+
                 </div>
-                <p class="text-3xl font-extrabold text-white mt-3 font-mono tracking-tight group-hover:scale-105 transform origin-left transition duration-300">11.4ms</p>
+
+                <p class="text-3xl font-extrabold text-white mt-3 font-mono tracking-tight group-hover:scale-105 transform origin-left transition duration-300">
+                    11.4ms
+                </p>
+
                 <div class="flex items-center gap-1 mt-2 text-[10px] text-emerald-400 font-medium">
+
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                    <span>Vercel Serverless runtime</span>
+
+                    <span>
+                        Vercel Serverless runtime
+                    </span>
+
                 </div>
+
             </div>
+
         </div>
 
-        <!-- Detailed Feature Breakdown & Matrix -->
+
+        <!-- FEATURE / MATRIX -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10">
-            <!-- Feature Importance Column -->
+
+            <!-- FEATURE IMPORTANCE -->
             <div class="lg:col-span-7 bg-zinc-950/80 border border-zinc-900 hover:border-zinc-800 p-6 rounded-2xl transition duration-300 flex flex-col justify-between">
+
                 <div>
+
                     <h3 class="text-sm font-semibold text-white mb-5 flex items-center justify-between border-b border-zinc-900 pb-3">
+
                         <span class="flex items-center gap-2">
-                            <svg class="w-4 h-4 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                            Feature Importance Weights (Top Diagnostic Drivers)
+
+                            <svg
+                                class="w-4 h-4 text-pink-500"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                                />
+                            </svg>
+
+                            Feature Importance Weights
                         </span>
-                        <span class="text-[10px] font-mono text-zinc-500 bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded">SHAP Normalized</span>
+
+                        <span class="text-[10px] font-mono text-zinc-500 bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded">
+                            SHAP Normalized
+                        </span>
+
                     </h3>
 
+
                     <div class="space-y-4">
-                        <!-- Feature 1 -->
+
+                        <!-- FEATURE 1 -->
                         <div class="group cursor-default">
+
                             <div class="flex justify-between text-xs mb-1.5">
-                                <span class="text-zinc-300 group-hover:text-pink-400 transition">Biopsy Pathological Grade</span>
-                                <span class="text-pink-400 font-mono font-semibold">0.284</span>
+
+                                <span class="text-zinc-300 group-hover:text-pink-400 transition">
+                                    Biopsy Pathological Grade
+                                </span>
+
+                                <span class="text-pink-400 font-mono font-semibold">
+                                    0.284
+                                </span>
+
                             </div>
+
+
                             <div class="w-full bg-black h-2.5 rounded-full overflow-hidden border border-zinc-900 p-0.5">
+
                                 <div class="bg-gradient-to-r from-pink-600 to-rose-400 h-full w-[85%] rounded-full group-hover:brightness-125 transition-all duration-500"></div>
+
                             </div>
+
                         </div>
 
-                        <!-- Feature 2 -->
+
+                        <!-- FEATURE 2 -->
                         <div class="group cursor-default">
+
                             <div class="flex justify-between text-xs mb-1.5">
-                                <span class="text-zinc-300 group-hover:text-pink-400 transition">Tumor Dimensions (cm)</span>
-                                <span class="text-pink-400 font-mono font-semibold">0.210</span>
+
+                                <span class="text-zinc-300 group-hover:text-pink-400 transition">
+                                    Tumor Dimensions (cm)
+                                </span>
+
+                                <span class="text-pink-400 font-mono font-semibold">
+                                    0.210
+                                </span>
+
                             </div>
+
+
                             <div class="w-full bg-black h-2.5 rounded-full overflow-hidden border border-zinc-900 p-0.5">
+
                                 <div class="bg-gradient-to-r from-pink-600 to-rose-400 h-full w-[65%] rounded-full group-hover:brightness-125 transition-all duration-500"></div>
+
                             </div>
+
                         </div>
 
-                        <!-- Feature 3 -->
+
+                        <!-- FEATURE 3 -->
                         <div class="group cursor-default">
+
                             <div class="flex justify-between text-xs mb-1.5">
-                                <span class="text-zinc-300 group-hover:text-pink-400 transition">Genetic Biomarkers (BRCA status)</span>
-                                <span class="text-pink-400 font-mono font-semibold">0.185</span>
+
+                                <span class="text-zinc-300 group-hover:text-pink-400 transition">
+                                    Genetic Biomarkers (BRCA status)
+                                </span>
+
+                                <span class="text-pink-400 font-mono font-semibold">
+                                    0.185
+                                </span>
+
                             </div>
+
+
                             <div class="w-full bg-black h-2.5 rounded-full overflow-hidden border border-zinc-900 p-0.5">
+
                                 <div class="bg-gradient-to-r from-pink-600 to-rose-400 h-full w-[55%] rounded-full group-hover:brightness-125 transition-all duration-500"></div>
+
                             </div>
+
                         </div>
 
-                        <!-- Feature 4 -->
+
+                        <!-- FEATURE 4 -->
                         <div class="group cursor-default">
+
                             <div class="flex justify-between text-xs mb-1.5">
-                                <span class="text-zinc-300 group-hover:text-pink-400 transition">Patient Age & Menopause State</span>
-                                <span class="text-pink-400 font-mono font-semibold">0.142</span>
+
+                                <span class="text-zinc-300 group-hover:text-pink-400 transition">
+                                    Patient Age & Menopause State
+                                </span>
+
+                                <span class="text-pink-400 font-mono font-semibold">
+                                    0.142
+                                </span>
+
                             </div>
+
+
                             <div class="w-full bg-black h-2.5 rounded-full overflow-hidden border border-zinc-900 p-0.5">
+
                                 <div class="bg-gradient-to-r from-pink-600 to-rose-400 h-full w-[42%] rounded-full group-hover:brightness-125 transition-all duration-500"></div>
+
                             </div>
+
                         </div>
+
                     </div>
+
                 </div>
+
 
                 <div class="mt-6 pt-3 border-t border-zinc-900/80 flex items-center justify-between text-[10px] text-zinc-500">
-                    <span>Rankings based on Tree-based SHAP Values</span>
-                    <span class="font-mono">N=10,000 Validation Samples</span>
+
+                    <span>
+                        Rankings based on Tree-based SHAP Values
+                    </span>
+
+                    <span class="font-mono">
+                        N=10,000 Validation Samples
+                    </span>
+
                 </div>
+
             </div>
 
-            <!-- Confusion Matrix Column -->
+
+            <!-- CONFUSION MATRIX -->
             <div class="lg:col-span-5 bg-zinc-950/80 border border-zinc-900 hover:border-zinc-800 p-6 rounded-2xl transition duration-300 flex flex-col justify-between">
+
                 <div>
+
                     <div class="border-b border-zinc-900 pb-3 mb-4">
-                        <h3 class="text-sm font-semibold text-white">Confusion Matrix Evaluation</h3>
-                        <p class="text-xs text-zinc-400 mt-0.5">Normalized matrix evaluated on holdout clinical test subset (n=5,000).</p>
+
+                        <h3 class="text-sm font-semibold text-white">
+                            Confusion Matrix Evaluation
+                        </h3>
+
+                        <p class="text-xs text-zinc-400 mt-0.5">
+                            Normalized matrix evaluated on holdout clinical test subset (n=5,000).
+                        </p>
+
                     </div>
+
 
                     <div class="grid grid-cols-2 gap-3">
-                        <!-- TN -->
+
                         <div class="group p-3.5 bg-black hover:bg-zinc-900/80 border border-zinc-900 hover:border-emerald-500/40 rounded-xl transition duration-200">
-                            <span class="text-[10px] text-zinc-500 uppercase block font-semibold group-hover:text-emerald-400 transition">True Negative</span>
-                            <span class="text-2xl font-bold text-emerald-400 font-mono mt-1 block">96.1%</span>
-                            <span class="text-[10px] text-zinc-600 mt-0.5 block">Correct Non-Malignant</span>
+
+                            <span class="text-[10px] text-zinc-500 uppercase block font-semibold group-hover:text-emerald-400 transition">
+                                True Negative
+                            </span>
+
+                            <span class="text-2xl font-bold text-emerald-400 font-mono mt-1 block">
+                                96.1%
+                            </span>
+
+                            <span class="text-[10px] text-zinc-600 mt-0.5 block">
+                                Correct Non-Malignant
+                            </span>
+
                         </div>
 
-                        <!-- FP -->
+
                         <div class="group p-3.5 bg-black hover:bg-zinc-900/80 border border-zinc-900 hover:border-rose-500/40 rounded-xl transition duration-200">
-                            <span class="text-[10px] text-zinc-500 uppercase block font-semibold group-hover:text-rose-400 transition">False Positive</span>
-                            <span class="text-2xl font-bold text-rose-400 font-mono mt-1 block">3.9%</span>
-                            <span class="text-[10px] text-zinc-600 mt-0.5 block">Over-flagged Risk</span>
+
+                            <span class="text-[10px] text-zinc-500 uppercase block font-semibold group-hover:text-rose-400 transition">
+                                False Positive
+                            </span>
+
+                            <span class="text-2xl font-bold text-rose-400 font-mono mt-1 block">
+                                3.9%
+                            </span>
+
+                            <span class="text-[10px] text-zinc-600 mt-0.5 block">
+                                Over-flagged Risk
+                            </span>
+
                         </div>
 
-                        <!-- FN -->
+
                         <div class="group p-3.5 bg-black hover:bg-zinc-900/80 border border-zinc-900 hover:border-rose-500/40 rounded-xl transition duration-200">
-                            <span class="text-[10px] text-zinc-500 uppercase block font-semibold group-hover:text-rose-400 transition">False Negative</span>
-                            <span class="text-2xl font-bold text-rose-400 font-mono mt-1 block">5.2%</span>
-                            <span class="text-[10px] text-zinc-600 mt-0.5 block">Missed Detection</span>
+
+                            <span class="text-[10px] text-zinc-500 uppercase block font-semibold group-hover:text-rose-400 transition">
+                                False Negative
+                            </span>
+
+                            <span class="text-2xl font-bold text-rose-400 font-mono mt-1 block">
+                                5.2%
+                            </span>
+
+                            <span class="text-[10px] text-zinc-600 mt-0.5 block">
+                                Missed Detection
+                            </span>
+
                         </div>
 
-                        <!-- TP -->
+
                         <div class="group p-3.5 bg-black hover:bg-zinc-900/80 border border-zinc-900 hover:border-emerald-500/40 rounded-xl transition duration-200">
-                            <span class="text-[10px] text-zinc-500 uppercase block font-semibold group-hover:text-emerald-400 transition">True Positive</span>
-                            <span class="text-2xl font-bold text-emerald-400 font-mono mt-1 block">94.8%</span>
-                            <span class="text-[10px] text-zinc-600 mt-0.5 block">Correct Malignancy</span>
+
+                            <span class="text-[10px] text-zinc-500 uppercase block font-semibold group-hover:text-emerald-400 transition">
+                                True Positive
+                            </span>
+
+                            <span class="text-2xl font-bold text-emerald-400 font-mono mt-1 block">
+                                94.8%
+                            </span>
+
+                            <span class="text-[10px] text-zinc-600 mt-0.5 block">
+                                Correct Malignancy
+                            </span>
+
                         </div>
+
                     </div>
+
                 </div>
+
 
                 <div class="mt-6 pt-3 border-t border-zinc-900 text-[10px] text-zinc-500 flex items-center justify-between">
-                    <span>Gradient boosted decision tree calibration</span>
-                    <span class="text-pink-400 font-mono">High Recall Target</span>
+
+                    <span>
+                        Gradient boosted decision tree calibration
+                    </span>
+
+                    <span class="text-pink-400 font-mono">
+                        High Recall Target
+                    </span>
+
                 </div>
+
             </div>
+
         </div>
+
     </section>
 
- <!-- Clinical Guidelines Section -->
-    <section id="guidelines" class="max-w-7xl w-full mx-auto px-6 py-16 border-t border-zinc-900/80 relative">
-        <!-- Section Header -->
+
+    <!-- ========================================================= -->
+    <!-- CLINICAL GUIDELINES -->
+    <!-- ========================================================= -->
+
+    <section
+        id="guidelines"
+        class="max-w-7xl w-full mx-auto px-6 py-16 border-t border-zinc-900/80 relative"
+    >
+
         <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+
             <div>
+
                 <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full border border-pink-500/20 bg-pink-500/10 text-pink-400 text-[11px] font-mono mb-2">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+
+                    <svg
+                        class="w-3 h-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                    </svg>
+
                     Clinical Practice Standards
+
                 </div>
-                <h2 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Diagnostic Protocol & Risk Stratification</h2>
-                <p class="text-xs text-zinc-400 mt-1 max-w-xl">Standard operating guidelines for interpreting AI assessment outputs alongside pathology reports.</p>
+
+
+                <h2 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+                    Diagnostic Protocol & Risk Stratification
+                </h2>
+
+
+                <p class="text-xs text-zinc-400 mt-1 max-w-xl">
+                    Standard operating guidelines for interpreting AI assessment outputs alongside pathology reports.
+                </p>
+
             </div>
+
+
             <div class="text-right">
+
                 <span class="text-[11px] font-mono text-zinc-500 bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded-lg inline-block">
                     Standard: NCCN Oncology Protocols
                 </span>
+
             </div>
+
         </div>
 
-        <!-- Tier Cards Grid -->
+
+        <!-- RISK TIERS -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
-            <!-- Tier 1: Low Risk -->
+
+            <!-- LOW -->
             <div class="group bg-zinc-950/80 hover:bg-zinc-900/90 border border-zinc-900 hover:border-emerald-500/50 p-6 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-500/5 flex flex-col justify-between relative overflow-hidden">
+
                 <div class="absolute top-0 left-0 right-0 h-1 bg-emerald-500/30 group-hover:bg-emerald-500 transition-all duration-300"></div>
+
+
                 <div>
+
                     <div class="flex items-center justify-between mb-4">
+
                         <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold font-mono text-xs shadow-inner">
                             01
                         </div>
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Standard Baseline</span>
+
+                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                            Standard Baseline
+                        </span>
+
                     </div>
-                    <h3 class="text-base font-bold text-white group-hover:text-emerald-400 transition mb-2">Low Risk Tier (&lt; 30%)</h3>
+
+
+                    <h3 class="text-base font-bold text-white group-hover:text-emerald-400 transition mb-2">
+                        Low Risk Tier (&lt; 30%)
+                    </h3>
+
+
                     <p class="text-xs text-zinc-400 leading-relaxed mb-6">
                         Model confidence indicates standard baseline risk. Pathological intervention is generally non-urgent absent physical symptoms.
                     </p>
+
                 </div>
+
+
                 <ul class="text-xs text-zinc-300 space-y-2.5 border-t border-zinc-900/80 pt-4 font-mono">
+
                     <li class="flex items-center gap-2.5">
+
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                        <span>Routine annual screening</span>
+
+                        <span>
+                            Routine annual screening
+                        </span>
+
                     </li>
+
+
                     <li class="flex items-center gap-2.5">
+
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                        <span>Standard demographic tracking</span>
+
+                        <span>
+                            Standard demographic tracking
+                        </span>
+
                     </li>
+
                 </ul>
+
             </div>
 
-            <!-- Tier 2: Moderate Risk -->
+
+            <!-- MODERATE -->
             <div class="group bg-zinc-950/80 hover:bg-zinc-900/90 border border-zinc-900 hover:border-amber-500/50 p-6 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-amber-500/5 flex flex-col justify-between relative overflow-hidden">
+
                 <div class="absolute top-0 left-0 right-0 h-1 bg-amber-500/30 group-hover:bg-amber-500 transition-all duration-300"></div>
+
+
                 <div>
+
                     <div class="flex items-center justify-between mb-4">
+
                         <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-bold font-mono text-xs shadow-inner">
                             02
                         </div>
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">Secondary Monitor</span>
+
+                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                            Secondary Monitor
+                        </span>
+
                     </div>
-                    <h3 class="text-base font-bold text-white group-hover:text-amber-400 transition mb-2">Moderate Risk Tier (30% - 70%)</h3>
+
+
+                    <h3 class="text-base font-bold text-white group-hover:text-amber-400 transition mb-2">
+                        Moderate Risk Tier (30% - 70%)
+                    </h3>
+
+
                     <p class="text-xs text-zinc-400 leading-relaxed mb-6">
                         Elevated probability requiring secondary evaluation. Indicates potential structural anomalies or strong familial predispositions.
                     </p>
+
                 </div>
+
+
                 <ul class="text-xs text-zinc-300 space-y-2.5 border-t border-zinc-900/80 pt-4 font-mono">
+
                     <li class="flex items-center gap-2.5">
+
                         <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-                        <span>Order targeted imaging (MRI/US)</span>
+
+                        <span>
+                            Order targeted imaging (MRI/US)
+                        </span>
+
                     </li>
+
+
                     <li class="flex items-center gap-2.5">
+
                         <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-                        <span>6-month follow-up assessment</span>
+
+                        <span>
+                            6-month follow-up assessment
+                        </span>
+
                     </li>
+
                 </ul>
+
             </div>
 
-            <!-- Tier 3: High Risk -->
+
+            <!-- HIGH -->
             <div class="group bg-zinc-950/80 hover:bg-zinc-900/90 border border-zinc-900 hover:border-pink-500/50 p-6 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-pink-500/10 flex flex-col justify-between relative overflow-hidden">
+
                 <div class="absolute top-0 left-0 right-0 h-1 bg-pink-500/30 group-hover:bg-pink-500 transition-all duration-300"></div>
+
+
                 <div>
+
                     <div class="flex items-center justify-between mb-4">
+
                         <div class="w-9 h-9 rounded-xl bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-pink-400 font-bold font-mono text-xs shadow-inner">
                             03
                         </div>
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-pink-500/10 text-pink-400 border border-pink-500/20">Priority Action</span>
+
+                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-pink-500/10 text-pink-400 border border-pink-500/20">
+                            Priority Action
+                        </span>
+
                     </div>
-                    <h3 class="text-base font-bold text-white group-hover:text-pink-400 transition mb-2">High Risk Tier (&gt; 70%)</h3>
+
+
+                    <h3 class="text-base font-bold text-white group-hover:text-pink-400 transition mb-2">
+                        High Risk Tier (&gt; 70%)
+                    </h3>
+
+
                     <p class="text-xs text-zinc-400 leading-relaxed mb-6">
                         Strong positive predictive model output. Prioritized clinical workflow routing recommended for diagnostic verification.
                     </p>
+
                 </div>
+
+
                 <ul class="text-xs text-zinc-300 space-y-2.5 border-t border-zinc-900/80 pt-4 font-mono">
+
                     <li class="flex items-center gap-2.5">
+
                         <span class="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse"></span>
-                        <span>Immediate core needle biopsy</span>
+
+                        <span>
+                            Immediate core needle biopsy
+                        </span>
+
                     </li>
+
+
                     <li class="flex items-center gap-2.5">
+
                         <span class="w-1.5 h-1.5 rounded-full bg-pink-400"></span>
-                        <span>Multidisciplinary oncology review</span>
+
+                        <span>
+                            Multidisciplinary oncology review
+                        </span>
+
                     </li>
+
                 </ul>
+
             </div>
 
         </div>
+
     </section>
-<!-- Interactive Professional Footer -->
-    <footer class="border-t border-zinc-900 bg-zinc-950 pt-16 pb-12 mt-20 relative overflow-hidden text-xs text-zinc-400">
-        <!-- Ambient Glow -->
+
+
+    <!-- ========================================================= -->
+    <!-- FOOTER -->
+    <!-- ========================================================= -->
+
+    <footer
+        class="border-t border-zinc-900 bg-zinc-950 pt-16 pb-12 mt-20 relative overflow-hidden text-xs text-zinc-400"
+    >
+
         <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-24 bg-pink-600/5 blur-[100px] pointer-events-none"></div>
 
+
         <div class="max-w-7xl mx-auto px-6 relative z-10">
+
             <div class="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-zinc-900">
-                
-                <!-- Platform & Lead Engineer Column -->
+
+                <!-- BRAND -->
                 <div class="md:col-span-5 space-y-4">
+
                     <div class="flex items-center space-x-3">
+
                         <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-pink-600 to-rose-500 flex items-center justify-center font-bold text-white shadow-lg shadow-pink-500/20 text-sm">
                             OP
                         </div>
-                        <span class="text-base font-bold tracking-tight text-white">OncoPredict AI</span>
+
+                        <span class="text-base font-bold tracking-tight text-white">
+                            OncoPredict AI
+                        </span>
+
                     </div>
 
-                    <!-- Developer & Lead Roles Badge Block -->
+
                     <div class="bg-black/80 border border-zinc-900 p-3.5 rounded-xl space-y-2">
+
                         <div class="flex items-center justify-between">
-                            <span class="text-[10px] font-mono uppercase tracking-wider text-zinc-500">Lead AI Engineer</span>
-                            <span class="text-[10px] font-mono text-pink-400">Primary Architect</span>
+
+                            <span class="text-[10px] font-mono uppercase tracking-wider text-zinc-500">
+                                Lead AI Engineer
+                            </span>
+
+                            <span class="text-[10px] font-mono text-pink-400">
+                                Primary Architect
+                            </span>
+
                         </div>
-                        <p class="text-sm font-bold text-white tracking-wide">Mobeen Fatima</p>
+
+
+                        <p class="text-sm font-bold text-white tracking-wide">
+                            Mobeen Fatima
+                        </p>
+
+
                         <div class="flex flex-wrap gap-1.5 pt-1">
-                            <span class="px-2 py-0.5 rounded bg-pink-500/10 border border-pink-500/20 text-pink-300 text-[10px] font-mono">System Builder</span>
-                            <span class="px-2 py-0.5 rounded bg-rose-500/10 border border-rose-500/20 text-rose-300 text-[10px] font-mono">Full-Stack Developer</span>
-                            <span class="px-2 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 text-purple-300 text-[10px] font-mono">Model Evaluator</span>
+
+                            <span class="px-2 py-0.5 rounded bg-pink-500/10 border border-pink-500/20 text-pink-300 text-[10px] font-mono">
+                                System Builder
+                            </span>
+
+                            <span class="px-2 py-0.5 rounded bg-rose-500/10 border border-rose-500/20 text-rose-300 text-[10px] font-mono">
+                                Full-Stack Developer
+                            </span>
+
+                            <span class="px-2 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 text-purple-300 text-[10px] font-mono">
+                                Model Evaluator
+                            </span>
+
                         </div>
+
                     </div>
+
 
                     <p class="text-zinc-400 text-xs leading-relaxed">
                         High-precision machine learning diagnostic system focused on synthetic pipeline validation, LightGBM calibration, and explainable oncology risk modeling.
                     </p>
 
+
                     <div class="flex items-center gap-3 pt-1">
+
                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] font-mono">
+
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+
                             System Operational
+
                         </span>
-                        <span class="text-[11px] font-mono text-zinc-500">v1.0 Enterprise Edition</span>
+
+
+                        <span class="text-[11px] font-mono text-zinc-500">
+                            v1.0 Enterprise Edition
+                        </span>
+
                     </div>
+
                 </div>
 
-                <!-- Navigation Quick Links Column -->
+
+                <!-- QUICK LINKS -->
                 <div class="md:col-span-3 space-y-3">
-                    <p class="text-xs font-semibold text-white uppercase tracking-wider font-mono">Quick Workspace</p>
+
+                    <p class="text-xs font-semibold text-white uppercase tracking-wider font-mono">
+                        Quick Workspace
+                    </p>
+
+
                     <ul class="space-y-2 text-zinc-400">
-                        <li><a href="#hero" class="hover:text-pink-400 transition flex items-center gap-1.5"><span>→</span> Platform Overview</a></li>
-                        <li><a href="#dashboard" class="hover:text-pink-400 transition flex items-center gap-1.5"><span>→</span> Diagnostic Dashboard</a></li>
-                        <li><a href="#metrics" class="hover:text-pink-400 transition flex items-center gap-1.5"><span>→</span> Model Validation Metrics</a></li>
-                        <li><a href="#guidelines" class="hover:text-pink-400 transition flex items-center gap-1.5"><span>→</span> Clinical Protocol Guidelines</a></li>
+
+                        <li>
+                            <a
+                                href="#hero"
+                                class="hover:text-pink-400 transition flex items-center gap-1.5"
+                            >
+                                <span>→</span>
+                                Platform Overview
+                            </a>
+                        </li>
+
+                        <li>
+                            <a
+                                href="#dashboard"
+                                class="hover:text-pink-400 transition flex items-center gap-1.5"
+                            >
+                                <span>→</span>
+                                Diagnostic Dashboard
+                            </a>
+                        </li>
+
+                        <li>
+                            <a
+                                href="#metrics"
+                                class="hover:text-pink-400 transition flex items-center gap-1.5"
+                            >
+                                <span>→</span>
+                                Model Validation Metrics
+                            </a>
+                        </li>
+
+                        <li>
+                            <a
+                                href="#guidelines"
+                                class="hover:text-pink-400 transition flex items-center gap-1.5"
+                            >
+                                <span>→</span>
+                                Clinical Protocol Guidelines
+                            </a>
+                        </li>
+
                     </ul>
+
                 </div>
 
-                <!-- Interactive Social Connect Column -->
+
+                <!-- SOCIAL -->
                 <div class="md:col-span-4 space-y-3">
-                    <p class="text-xs font-semibold text-white uppercase tracking-wider font-mono">Mobeen's Channels</p>
+
+                    <p class="text-xs font-semibold text-white uppercase tracking-wider font-mono">
+                        Mobeen's Channels
+                    </p>
+
+
                     <div class="grid grid-cols-1 gap-2.5">
-                        
-                        <!-- GitHub Button -->
-                        <a href="https://github.com/MobeenFatimaa" target="_blank" rel="noopener noreferrer" 
-                           class="group bg-black/80 hover:bg-zinc-900 border border-zinc-800 hover:border-pink-500/50 p-3 rounded-xl transition duration-200 flex items-center justify-between">
+
+                        <!-- GITHUB -->
+                        <a
+                            href="https://github.com/MobeenFatimaa"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="group bg-black/80 hover:bg-zinc-900 border border-zinc-800 hover:border-pink-500/50 p-3 rounded-xl transition duration-200 flex items-center justify-between"
+                        >
+
                             <div class="flex items-center gap-3">
+
                                 <div class="w-8 h-8 rounded-lg bg-zinc-900 group-hover:bg-pink-600/20 border border-zinc-800 group-hover:border-pink-500/40 flex items-center justify-center text-zinc-300 group-hover:text-pink-400 transition">
-                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+
+                                    <svg
+                                        class="w-4 h-4"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            fill-rule="evenodd"
+                                            clip-rule="evenodd"
+                                            d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                                        />
+                                    </svg>
+
                                 </div>
+
+
                                 <div>
-                                    <p class="text-xs font-medium text-white group-hover:text-pink-400 transition">GitHub Profile</p>
-                                    <p class="text-[10px] text-zinc-500">Source Repositories & Architecture</p>
+
+                                    <p class="text-xs font-medium text-white group-hover:text-pink-400 transition">
+                                        GitHub Profile
+                                    </p>
+
+                                    <p class="text-[10px] text-zinc-500">
+                                        Source Repositories & Architecture
+                                    </p>
+
                                 </div>
+
                             </div>
-                            <svg class="w-3.5 h-3.5 text-zinc-600 group-hover:text-pink-400 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+
+
+                            <svg
+                                class="w-3.5 h-3.5 text-zinc-600 group-hover:text-pink-400 group-hover:translate-x-1 transition"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M14 5l7 7m0 0l-7 7m7-7H3"
+                                />
+                            </svg>
+
                         </a>
 
-                        <!-- LinkedIn Button -->
-                        <a href="https://www.linkedin.com/in/mobeen-fatima-599a35347/" target="_blank" rel="noopener noreferrer" 
-                           class="group bg-black/80 hover:bg-zinc-900 border border-zinc-800 hover:border-pink-500/50 p-3 rounded-xl transition duration-200 flex items-center justify-between">
+
+                        <!-- LINKEDIN -->
+                        <a
+                            href="https://www.linkedin.com/in/mobeen-fatima-599a35347/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="group bg-black/80 hover:bg-zinc-900 border border-zinc-800 hover:border-pink-500/50 p-3 rounded-xl transition duration-200 flex items-center justify-between"
+                        >
+
                             <div class="flex items-center gap-3">
+
                                 <div class="w-8 h-8 rounded-lg bg-zinc-900 group-hover:bg-pink-600/20 border border-zinc-800 group-hover:border-pink-500/40 flex items-center justify-center text-zinc-300 group-hover:text-pink-400 transition">
-                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+
+                                    <svg
+                                        class="w-4 h-4"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                                    </svg>
+
                                 </div>
+
+
                                 <div>
-                                    <p class="text-xs font-medium text-white group-hover:text-pink-400 transition">LinkedIn Network</p>
-                                    <p class="text-[10px] text-zinc-500">Professional ML Engineering</p>
+
+                                    <p class="text-xs font-medium text-white group-hover:text-pink-400 transition">
+                                        LinkedIn Network
+                                    </p>
+
+                                    <p class="text-[10px] text-zinc-500">
+                                        Professional ML Engineering
+                                    </p>
+
                                 </div>
+
                             </div>
-                            <svg class="w-3.5 h-3.5 text-zinc-600 group-hover:text-pink-400 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+
+
+                            <svg
+                                class="w-3.5 h-3.5 text-zinc-600 group-hover:text-pink-400 group-hover:translate-x-1 transition"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M14 5l7 7m0 0l-7 7m7-7H3"
+                                />
+                            </svg>
+
                         </a>
 
-                        <!-- Kaggle Button -->
-                        <a href="https://www.kaggle.com/mobeenfatimah" target="_blank" rel="noopener noreferrer" 
-                           class="group bg-black/80 hover:bg-zinc-900 border border-zinc-800 hover:border-pink-500/50 p-3 rounded-xl transition duration-200 flex items-center justify-between">
+
+                        <!-- KAGGLE -->
+                        <a
+                            href="https://www.kaggle.com/mobeenfatimah"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="group bg-black/80 hover:bg-zinc-900 border border-zinc-800 hover:border-pink-500/50 p-3 rounded-xl transition duration-200 flex items-center justify-between"
+                        >
+
                             <div class="flex items-center gap-3">
+
                                 <div class="w-8 h-8 rounded-lg bg-zinc-900 group-hover:bg-pink-600/20 border border-zinc-800 group-hover:border-pink-500/40 flex items-center justify-center text-zinc-300 group-hover:text-pink-400 transition font-bold font-mono text-sm">
                                     K
                                 </div>
+
+
                                 <div>
-                                    <p class="text-xs font-medium text-white group-hover:text-pink-400 transition">Kaggle Benchmarks</p>
-                                    <p class="text-[10px] text-zinc-500">Dataset & Notebook Expert Tiers</p>
+
+                                    <p class="text-xs font-medium text-white group-hover:text-pink-400 transition">
+                                        Kaggle Benchmarks
+                                    </p>
+
+                                    <p class="text-[10px] text-zinc-500">
+                                        Dataset & Notebook Expert Tiers
+                                    </p>
+
                                 </div>
+
                             </div>
-                            <svg class="w-3.5 h-3.5 text-zinc-600 group-hover:text-pink-400 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+
+
+                            <svg
+                                class="w-3.5 h-3.5 text-zinc-600 group-hover:text-pink-400 group-hover:translate-x-1 transition"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M14 5l7 7m0 0l-7 7m7-7H3"
+                                />
+                            </svg>
+
                         </a>
 
                     </div>
+
                 </div>
 
             </div>
 
-            <!-- Bottom Copyright & Credit Strip -->
+
+            <!-- COPYRIGHT -->
             <div class="pt-8 flex flex-col md:flex-row items-center justify-between text-zinc-500 gap-4">
-                <p>&copy; 2026 OncoPredict Intelligence Platform. Engineered & Evaluated by <span class="text-zinc-300 font-medium">Mobeen Fatima</span>.</p>
+
+                <p>
+                    &copy; 2026 OncoPredict Intelligence Platform.
+                    Engineered & Evaluated by
+                    <span class="text-zinc-300 font-medium">
+                        Mobeen Fatima
+                    </span>.
+                </p>
+
+
                 <div class="flex items-center space-x-6">
-                    <a href="#hero" class="hover:text-zinc-300 transition">Back to top ↑</a>
+
+                    <a
+                        href="#hero"
+                        class="hover:text-zinc-300 transition"
+                    >
+                        Back to top ↑
+                    </a>
+
                 </div>
+
             </div>
+
         </div>
+
     </footer>
-<!-- Floating AI Assistant Trigger & Chat Window -->
-<div id="ai-assistant-container" class="fixed bottom-6 right-6 z-50 flex flex-col items-end font-sans">
-    
-    <!-- Chat Window Box (Fixed dimensions + flex column layout) -->
-    <div id="ai-chat-box" class="hidden w-[360px] sm:w-[400px] h-[500px] max-h-[80vh] bg-zinc-950/95 backdrop-blur-xl border border-zinc-800 rounded-2xl shadow-2xl shadow-pink-500/10 flex flex-col overflow-hidden mb-4 transition-all duration-300 transform scale-95 opacity-0 origin-bottom-right">
-        
-        <!-- Chat Window Header (Fixed Height) -->
-        <div class="p-4 bg-zinc-900/80 border-b border-zinc-800 flex items-center justify-between shrink-0">
-            <div class="flex items-center gap-3">
-                <div class="relative">
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-pink-600 to-rose-500 flex items-center justify-center font-bold text-white shadow-md shadow-pink-500/20 text-xs">
+
+
+    <!-- ========================================================= -->
+    <!-- AI ASSISTANT -->
+    <!-- ========================================================= -->
+
+    <div
+        id="ai-assistant-container"
+        class="fixed bottom-6 right-6 z-50 flex flex-col items-end font-sans"
+    >
+
+        <!-- CHAT WINDOW -->
+        <div
+            id="ai-chat-box"
+            class="hidden w-[calc(100vw-3rem)] sm:w-[400px] h-[500px] max-h-[80vh] bg-zinc-950/95 backdrop-blur-xl border border-zinc-800 rounded-2xl shadow-2xl shadow-pink-500/10 flex flex-col overflow-hidden mb-4 transition-all duration-300 transform scale-95 opacity-0 origin-bottom-right"
+        >
+
+            <!-- HEADER -->
+            <div class="p-4 bg-zinc-900/80 border-b border-zinc-800 flex items-center justify-between shrink-0">
+
+                <div class="flex items-center gap-3">
+
+                    <div class="relative">
+
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-pink-600 to-rose-500 flex items-center justify-center font-bold text-white shadow-md shadow-pink-500/20 text-xs">
+                            AI
+                        </div>
+
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-zinc-950 absolute -bottom-0.5 -right-0.5"></span>
+
+                    </div>
+
+
+                    <div>
+
+                        <h4 class="text-xs font-bold text-white flex items-center gap-1.5">
+
+                            OncoPredict Assistant
+
+                            <span class="text-[9px] font-mono px-1.5 py-0.2 bg-pink-500/10 border border-pink-500/20 text-pink-400 rounded">
+                                v1.0
+                            </span>
+
+                        </h4>
+
+                        <p class="text-[10px] text-zinc-400">
+                            Oncology AI & Platform Guide
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    id="close-chat-btn"
+                    type="button"
+                    class="text-zinc-400 hover:text-white p-1 rounded-lg hover:bg-zinc-800 transition"
+                    aria-label="Close AI assistant"
+                >
+
+                    <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12"
+                        />
+                    </svg>
+
+                </button>
+
+            </div>
+
+
+            <!-- MESSAGES -->
+            <div
+                id="chat-messages"
+                class="flex-1 min-h-0 p-4 overflow-y-auto space-y-3.5 text-xs custom-scrollbar"
+            >
+
+                <!-- WELCOME -->
+                <div class="flex gap-2.5 items-start">
+
+                    <div class="w-6 h-6 rounded-lg bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-pink-400 text-[10px] font-bold shrink-0 mt-0.5">
                         AI
                     </div>
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-zinc-950 absolute -bottom-0.5 -right-0.5"></span>
+
+
+                    <div class="bg-zinc-900 border border-zinc-800 text-zinc-300 p-3 rounded-2xl rounded-tl-xs max-w-[85%] leading-relaxed">
+
+                        Hello! I am the OncoPredict AI Assistant.
+                        Ask me anything about breast cancer risk factors,
+                        LightGBM model metrics, or clinical guidelines.
+
+                    </div>
+
                 </div>
-                <div>
-                    <h4 class="text-xs font-bold text-white flex items-center gap-1.5">
-                        OncoPredict Assistant
-                        <span class="text-[9px] font-mono px-1.5 py-0.2 bg-pink-500/10 border border-pink-500/20 text-pink-400 rounded">v1.0</span>
-                    </h4>
-                    <p class="text-[10px] text-zinc-400">Oncology AI & Platform Guide</p>
+
+
+                <!-- SUGGESTIONS -->
+                <div
+                    id="suggested-queries"
+                    class="flex flex-wrap gap-1.5 pt-1 pl-8"
+                >
+
+                    <button
+                        type="button"
+                        onclick="sendQuickQuery('How does the LightGBM model predict risk?')"
+                        class="text-[10px] bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-pink-500/40 text-zinc-400 hover:text-pink-300 px-2.5 py-1 rounded-lg transition text-left"
+                    >
+                        💡 How model predicts risk?
+                    </button>
+
+
+                    <button
+                        type="button"
+                        onclick="sendQuickQuery('What are high-risk diagnostic drivers?')"
+                        class="text-[10px] bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-pink-500/40 text-zinc-400 hover:text-pink-300 px-2.5 py-1 rounded-lg transition text-left"
+                    >
+                        🧬 Top diagnostic drivers?
+                    </button>
+
                 </div>
+
             </div>
-            
-            <!-- Close Button -->
-            <button id="close-chat-btn" type="button" class="text-zinc-400 hover:text-white p-1 rounded-lg hover:bg-zinc-800 transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
+
+
+            <!-- INPUT -->
+            <div class="p-3 border-t border-zinc-800/80 bg-zinc-900/90 shrink-0">
+
+                <form
+                    id="chat-form"
+                    class="flex items-center gap-2"
+                >
+
+                    <input
+                        type="text"
+                        id="chat-input"
+                        placeholder="Ask about model metrics, guidelines..."
+                        autocomplete="off"
+                        class="flex-1 bg-black/80 border border-zinc-800 focus:border-pink-500/60 text-xs text-white placeholder-zinc-500 px-3 py-2 rounded-xl focus:outline-none transition"
+                    >
+
+
+                    <button
+                        type="submit"
+                        class="bg-pink-600 hover:bg-pink-500 text-white p-2 rounded-xl transition shadow-md shadow-pink-600/20 flex items-center justify-center shrink-0"
+                        aria-label="Send message"
+                    >
+
+                        <svg
+                            class="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                            />
+                        </svg>
+
+                    </button>
+
+                </form>
+
+            </div>
+
         </div>
 
-        <!-- Messages Stream Container (Scrollable Area with Themed Scrollbar) -->
-        <div id="chat-messages" class="flex-1 min-h-0 p-4 overflow-y-auto space-y-3.5 text-xs [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-zinc-950 [&::-webkit-scrollbar-thumb]:bg-zinc-800 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-pink-600">
-            
-            <!-- Welcome Bot Message -->
-            <div class="flex gap-2.5 items-start">
-                <div class="w-6 h-6 rounded-lg bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-pink-400 text-[10px] font-bold shrink-0 mt-0.5">
-                    AI
-                </div>
-                <div class="bg-zinc-900 border border-zinc-800 text-zinc-300 p-3 rounded-2xl rounded-tl-xs max-w-[85%] leading-relaxed">
-                    Hello! I am the OncoPredict AI Assistant. Ask me anything about breast cancer risk factors, LightGBM model metrics, or clinical guidelines!
-                </div>
-            </div>
 
-            <!-- Quick Suggested Topics -->
-            <div id="suggested-queries" class="flex flex-wrap gap-1.5 pt-1 pl-8">
-                <button type="button" onclick="sendQuickQuery('How does the LightGBM model predict risk?')" class="text-[10px] bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-pink-500/40 text-zinc-400 hover:text-pink-300 px-2.5 py-1 rounded-lg transition text-left">
-                    💡 How model predicts risk?
-                </button>
-                <button type="button" onclick="sendQuickQuery('What are high-risk diagnostic drivers?')" class="text-[10px] bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-pink-500/40 text-zinc-400 hover:text-pink-300 px-2.5 py-1 rounded-lg transition text-left">
-                    🧬 Top diagnostic drivers?
-                </button>
-            </div>
-        </div>
+        <!-- FLOATING BUTTON -->
+        <button
+            id="toggle-chat-btn"
+            type="button"
+            class="group relative bg-pink-600 hover:bg-pink-500 text-white p-3.5 rounded-2xl shadow-xl shadow-pink-600/25 transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center"
+            aria-label="Open AI assistant"
+            aria-expanded="false"
+        >
 
-        <!-- Chat Input Form Container (Pinned Bottom) -->
-        <div class="p-3 border-t border-zinc-800/80 bg-zinc-900/90 shrink-0">
-            <form id="chat-form" class="flex items-center gap-2">
-                <input type="text" id="chat-input" placeholder="Ask about model metrics, guidelines..." 
-                    class="flex-1 bg-black/80 border border-zinc-800 focus:border-pink-500/60 text-xs text-white placeholder-zinc-500 px-3 py-2 rounded-xl focus:outline-none transition">
-                <button type="submit" class="bg-pink-600 hover:bg-pink-500 text-white p-2 rounded-xl transition shadow-md shadow-pink-600/20 flex items-center justify-center shrink-0">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
-                </button>
-            </form>
-        </div>
+            <span class="absolute -inset-1 rounded-2xl bg-pink-500/30 group-hover:bg-pink-500/50 blur-sm transition animate-pulse"></span>
+
+
+            <svg
+                id="chat-icon-open"
+                class="w-6 h-6 relative z-10"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                />
+            </svg>
+
+
+            <svg
+                id="chat-icon-close"
+                class="w-6 h-6 relative z-10 hidden"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                />
+            </svg>
+
+        </button>
+
     </div>
 
-    <!-- Floating Trigger Icon Button -->
-    <button id="toggle-chat-btn" type="button" class="group relative bg-pink-600 hover:bg-pink-500 text-white p-3.5 rounded-2xl shadow-xl shadow-pink-600/25 transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center">
-        <span class="absolute -inset-1 rounded-2xl bg-pink-500/30 group-hover:bg-pink-500/50 blur-sm transition animate-pulse"></span>
-        <svg id="chat-icon-open" class="w-6 h-6 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-        <svg id="chat-icon-close" class="w-6 h-6 relative z-10 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-    </button>
-</div>
-  
-    <script src="/static/js/main.js"></script>
+
+    <!-- ========================================================= -->
+    <!-- JAVASCRIPT -->
+    <!-- ========================================================= -->
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
 </body>
 </html>
