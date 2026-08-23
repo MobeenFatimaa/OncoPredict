@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     // =========================================================
-    // 1. ELEMENT REFERENCES
+    // ELEMENT REFERENCES
     // =========================================================
 
     const fillBtn = document.getElementById("fillDefaultsBtn");
@@ -9,548 +9,820 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const toggleBtn = document.getElementById("toggle-chat-btn");
     const closeBtn = document.getElementById("close-chat-btn");
-
     const chatBox = document.getElementById("ai-chat-box");
     const chatIconOpen = document.getElementById("chat-icon-open");
     const chatIconClose = document.getElementById("chat-icon-close");
-
     const chatForm = document.getElementById("chat-form");
     const chatInput = document.getElementById("chat-input");
     const chatMessages = document.getElementById("chat-messages");
 
+    const featureContainer =
+        document.getElementById("featureContainer");
+
+    const featureCount =
+        document.getElementById("featureCount");
+
 
     // =========================================================
-    // 2. AUTOFILL SAMPLE DATA
+    // LOAD FEATURES FROM BACKEND
     // =========================================================
 
-    if (fillBtn) {
+    async function loadFeaturesFromBackend() {
 
-        fillBtn.addEventListener("click", () => {
+        if (!featureContainer) return;
 
-            document
-                .querySelectorAll('input[type="number"]')
-                .forEach((input) => {
+        try {
 
-                    const name = (input.name || "").toLowerCase();
+            const response = await fetch("/api/features", {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json"
+                },
+                cache: "no-store"
+            });
 
-                    if (name.includes("age")) {
-                        input.value = 38;
-                    }
+            if (!response.ok) {
+                throw new Error(
+                    `Feature API returned ${response.status}`
+                );
+            }
 
-                    else if (name.includes("bmi")) {
-                        input.value = 22.4;
-                    }
+            const data = await response.json();
 
-                    else if (name.includes("tumor")) {
-                        input.value = 0.8;
-                    }
+            if (
+                data.status !== "success" ||
+                !Array.isArray(data.features) ||
+                data.features.length === 0
+            ) {
+                throw new Error(
+                    "Backend returned no model features."
+                );
+            }
 
-                    else if (name.includes("pressure")) {
-                        input.value = 118;
-                    }
+            // If Jinja already rendered inputs,
+            // don't duplicate them.
+            const existingInputs =
+                featureContainer.querySelectorAll(
+                    "input[name], select[name]"
+                );
 
-                    else if (name.includes("cholesterol")) {
-                        input.value = 175;
-                    }
+            if (existingInputs.length > 0) {
 
-                    else if (name.includes("income")) {
-                        input.value = 55000;
-                    }
+                if (featureCount) {
+                    featureCount.textContent =
+                        existingInputs.length;
+                }
 
-                    else if (name.includes("exercise")) {
-                        input.value = 4;
-                    }
+                return;
+            }
 
-                    else {
-                        input.value = 0;
-                    }
+            renderFeatures(data.features);
 
-                });
+        } catch (error) {
 
+            console.error(
+                "Feature loading error:",
+                error
+            );
 
-            document
-                .querySelectorAll("select")
-                .forEach((select) => {
-                    select.value = "0";
-                });
+            const loadingState =
+                document.getElementById(
+                    "featureLoadingState"
+                );
 
-        });
+            if (loadingState) {
 
+                loadingState.innerHTML = `
+                    <div class="w-12 h-12 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mb-4">
+                        <svg
+                            class="w-6 h-6 text-rose-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M12 9v4m0 4h.01M10.3 3h3.4L21 16.5a2 2 0 0 1-1.73 3H4.73A2 2 0 0 1 3 16.5L10.3 3z"
+                            />
+                        </svg>
+                    </div>
+
+                    <p class="text-sm font-medium text-rose-300">
+                        Diagnostic Parameters Unavailable
+                    </p>
+
+                    <p class="text-xs text-zinc-500 mt-1 max-w-md">
+                        The Vercel inference function could not load
+                        the model feature configuration.
+                    </p>
+
+                    <button
+                        type="button"
+                        id="retryFeaturesBtn"
+                        class="mt-4 px-4 py-2 rounded-xl bg-pink-600 hover:bg-pink-500 text-white text-xs font-medium transition"
+                    >
+                        Retry Connection
+                    </button>
+                `;
+
+                const retryBtn =
+                    document.getElementById(
+                        "retryFeaturesBtn"
+                    );
+
+                if (retryBtn) {
+
+                    retryBtn.addEventListener(
+                        "click",
+                        loadFeaturesFromBackend
+                    );
+                }
+            }
+        }
     }
 
 
     // =========================================================
-    // 3. FEATURE TAB FILTERING
+    // RENDER FEATURES DYNAMICALLY
     // =========================================================
 
-    const tabButtons = document.querySelectorAll(".tab-btn");
-    const featureItems = document.querySelectorAll(".feature-item");
+    function renderFeatures(features) {
 
-    tabButtons.forEach((button) => {
+        if (!featureContainer) return;
 
-        button.addEventListener("click", () => {
+        featureContainer.innerHTML = "";
 
-            const filter = button.getAttribute("data-filter");
+        features.forEach((feature) => {
 
-            tabButtons.forEach((btn) => {
+            const item =
+                document.createElement("div");
 
-                btn.classList.remove(
+            const category =
+                getFeatureCategory(feature);
+
+            item.className =
+                "feature-item flex flex-col justify-end bg-zinc-900/40 p-3 rounded-xl border border-zinc-900/80 hover:border-zinc-800 transition-colors";
+
+            item.dataset.category = category;
+
+            const label =
+                document.createElement("label");
+
+            label.htmlFor = feature;
+
+            label.className =
+                "block text-xs font-medium text-zinc-300 mb-1.5 capitalize tracking-wide";
+
+            label.textContent =
+                cleanFeatureName(feature);
+
+
+            if (isSelectFeature(feature)) {
+
+                const wrapper =
+                    document.createElement("div");
+
+                wrapper.className = "relative";
+
+                const select =
+                    document.createElement("select");
+
+                select.name = feature;
+                select.id = feature;
+                select.required = true;
+
+                select.className =
+                    "w-full appearance-none bg-black/80 border border-zinc-800 rounded-xl px-3 py-2 pr-9 text-xs text-zinc-100 focus:outline-none focus:border-pink-500/80 focus:ring-1 focus:ring-pink-500/80 transition cursor-pointer";
+
+                const positive =
+                    document.createElement("option");
+
+                positive.value = "1";
+                positive.textContent =
+                    "Yes / Positive";
+
+                const negative =
+                    document.createElement("option");
+
+                negative.value = "0";
+                negative.textContent =
+                    "No / Negative";
+                negative.selected = true;
+
+                select.appendChild(positive);
+                select.appendChild(negative);
+
+
+                const arrow =
+                    document.createElement("span");
+
+                arrow.className =
+                    "pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-pink-500";
+
+                arrow.innerHTML = "⌄";
+
+                wrapper.appendChild(select);
+                wrapper.appendChild(arrow);
+
+                item.appendChild(label);
+                item.appendChild(wrapper);
+
+            } else {
+
+                const input =
+                    document.createElement("input");
+
+                input.type = "number";
+                input.step = "any";
+                input.name = feature;
+                input.id = feature;
+                input.required = true;
+
+                input.placeholder =
+                    getPlaceholder(feature);
+
+                input.className =
+                    "w-full bg-black/80 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-pink-500/80 focus:ring-1 focus:ring-pink-500/80 transition";
+
+                item.appendChild(label);
+                item.appendChild(input);
+            }
+
+            featureContainer.appendChild(item);
+        });
+
+
+        if (featureCount) {
+            featureCount.textContent =
+                features.length;
+        }
+
+        initializeTabs();
+    }
+
+
+    // =========================================================
+    // FEATURE HELPERS
+    // =========================================================
+
+    function cleanFeatureName(feature) {
+
+        return feature
+            .replace("_Yes", "")
+            .replace("_Male", "")
+            .replace("_High", "")
+            .replace("_Low", "")
+            .replaceAll("_", " ");
+    }
+
+
+    function getFeatureCategory(feature) {
+
+        const lifestyleKeywords = [
+            "Age",
+            "Gender",
+            "BMI",
+            "Activity",
+            "Smok",
+            "Alcohol",
+            "Diet",
+            "Genetic",
+            "History",
+            "Menopause"
+        ];
+
+        return lifestyleKeywords.some(
+            keyword => feature.includes(keyword)
+        )
+            ? "lifestyle"
+            : "clinical";
+    }
+
+
+    function isSelectFeature(feature) {
+
+        return (
+            feature.endsWith("_Yes") ||
+            feature.endsWith("_Male") ||
+            feature.includes("Biopsy") ||
+            feature.includes("Mammogram") ||
+            feature.includes("Menopause") ||
+            feature.includes("Activity") ||
+            feature.includes("Genetic")
+        );
+    }
+
+
+    function getPlaceholder(feature) {
+
+        if (feature.includes("Age")) {
+            return "52";
+        }
+
+        if (feature.includes("BMI")) {
+            return "24.5";
+        }
+
+        if (feature.includes("Tumor")) {
+            return "1.5";
+        }
+
+        if (feature.includes("Pressure")) {
+            return "120";
+        }
+
+        if (feature.includes("Cholesterol")) {
+            return "180";
+        }
+
+        if (feature.includes("Income")) {
+            return "55000";
+        }
+
+        if (feature.includes("Exercise")) {
+            return "4";
+        }
+
+        return "0.0";
+    }
+
+
+    // =========================================================
+    // AUTOFILL
+    // =========================================================
+
+    function autofillForm() {
+
+        if (!form) return;
+
+        form.querySelectorAll(
+            'input[type="number"]'
+        ).forEach(input => {
+
+            const name =
+                input.name.toLowerCase();
+
+            if (name.includes("age")) {
+                input.value = 38;
+
+            } else if (name.includes("bmi")) {
+                input.value = 22.4;
+
+            } else if (name.includes("tumor")) {
+                input.value = 0.8;
+
+            } else if (name.includes("pressure")) {
+                input.value = 118;
+
+            } else if (name.includes("cholesterol")) {
+                input.value = 175;
+
+            } else if (name.includes("income")) {
+                input.value = 55000;
+
+            } else if (name.includes("exercise")) {
+                input.value = 4;
+
+            } else {
+                input.value = 0;
+            }
+        });
+
+
+        form.querySelectorAll("select")
+            .forEach(select => {
+                select.value = "0";
+            });
+    }
+
+
+    if (fillBtn) {
+
+        fillBtn.addEventListener(
+            "click",
+            autofillForm
+        );
+    }
+
+
+    // =========================================================
+    // TABS
+    // =========================================================
+
+    function initializeTabs() {
+
+        const tabButtons =
+            document.querySelectorAll(
+                ".tab-btn"
+            );
+
+        const featureItems =
+            document.querySelectorAll(
+                ".feature-item"
+            );
+
+        tabButtons.forEach(button => {
+
+            button.onclick = () => {
+
+                const filter =
+                    button.dataset.filter;
+
+                tabButtons.forEach(btn => {
+
+                    btn.classList.remove(
+                        "bg-pink-600",
+                        "text-white",
+                        "shadow-md",
+                        "shadow-pink-600/20"
+                    );
+
+                    btn.classList.add(
+                        "text-zinc-400"
+                    );
+                });
+
+
+                button.classList.add(
                     "bg-pink-600",
                     "text-white",
                     "shadow-md",
                     "shadow-pink-600/20"
                 );
 
-                btn.classList.add(
-                    "text-zinc-400",
-                    "hover:text-white",
-                    "hover:bg-zinc-900"
+                button.classList.remove(
+                    "text-zinc-400"
                 );
 
-            });
 
+                featureItems.forEach(item => {
 
-            button.classList.add(
-                "bg-pink-600",
-                "text-white",
-                "shadow-md",
-                "shadow-pink-600/20"
-            );
+                    if (
+                        filter === "all" ||
+                        item.dataset.category === filter
+                    ) {
 
-            button.classList.remove(
-                "text-zinc-400",
-                "hover:text-white",
-                "hover:bg-zinc-900"
-            );
+                        item.style.display = "";
 
+                    } else {
 
-            featureItems.forEach((item) => {
-
-                const category = item.getAttribute("data-category");
-
-                if (filter === "all" || category === filter) {
-
-                    item.style.display = "";
-
-                }
-
-                else {
-
-                    item.style.display = "none";
-
-                }
-
-            });
-
+                        item.style.display = "none";
+                    }
+                });
+            };
         });
+    }
 
-    });
+
+    initializeTabs();
 
 
     // =========================================================
-    // 4. FORM SUBMISSION / MODEL PREDICTION
+    // FORM SUBMISSION
     // =========================================================
 
     if (form) {
 
-        form.addEventListener("submit", async function (e) {
+        form.addEventListener(
+            "submit",
+            async function (event) {
 
-            e.preventDefault();
+                event.preventDefault();
 
-            const submitBtn = document.getElementById("submitBtn");
-            const idleState = document.getElementById("idleState");
-            const resultBox = document.getElementById("resultBox");
-
-            if (!submitBtn) {
-                return;
-            }
-
-
-            // Disable button
-            submitBtn.disabled = true;
-
-
-            // Loading state
-            submitBtn.innerHTML = `
-                <svg
-                    class="animate-spin h-4 w-4 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                >
-                    <circle
-                        class="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        stroke-width="4"
-                    ></circle>
-
-                    <path
-                        class="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                </svg>
-
-                <span>
-                    Running Inference Engine...
-                </span>
-            `;
-
-
-            // Build JSON payload
-            const formData = new FormData(this);
-            const payload = {};
-
-            formData.forEach((value, key) => {
-                payload[key] = value;
-            });
-
-
-            try {
-
-                const response = await fetch("/api/predict", {
-
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-
-                    body: JSON.stringify(payload)
-
-                });
-
-
-                let data;
-
-                try {
-                    data = await response.json();
-                }
-
-                catch (jsonError) {
-
-                    throw new Error(
-                        `Server returned an invalid response. HTTP ${response.status}`
+                const submitBtn =
+                    document.getElementById(
+                        "submitBtn"
                     );
 
-                }
-
-
-                if (response.ok && data.status === "success") {
-
-                    if (idleState) {
-                        idleState.classList.add("hidden");
-                    }
-
-                    if (resultBox) {
-                        resultBox.classList.remove("hidden");
-                    }
-
-
-                    const statusBanner =
-                        document.getElementById("statusBanner");
-
-                    const resultLabel =
-                        document.getElementById("resultLabel");
-
-                    const resultSubtitle =
-                        document.getElementById("resultSubtitle");
-
-                    const actionText =
-                        document.getElementById("actionText");
-
-
-                    // =================================================
-                    // MALIGNANT RESULT
-                    // =================================================
-
-                    if (data.diagnosis === "Malignant") {
-
-                        if (statusBanner) {
-
-                            statusBanner.className =
-                                "p-5 rounded-2xl border border-rose-500/30 bg-rose-500/10 text-rose-400 shadow-lg shadow-rose-900/10 flex flex-col items-center text-center transition-all";
-
-                        }
-
-
-                        if (resultLabel) {
-                            resultLabel.innerText = "MALIGNANT";
-                        }
-
-
-                        if (resultSubtitle) {
-
-                            resultSubtitle.innerText =
-                                "Elevated risk indicators detected.";
-
-                        }
-
-
-                        if (actionText) {
-
-                            actionText.innerText =
-                                "High likelihood of malignancy detected. Flag for immediate secondary clinical review, additional diagnostic imaging, and biopsy verification.";
-
-                        }
-
-                    }
-
-
-                    // =================================================
-                    // BENIGN RESULT
-                    // =================================================
-
-                    else {
-
-                        if (statusBanner) {
-
-                            statusBanner.className =
-                                "p-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 shadow-lg shadow-emerald-900/10 flex flex-col items-center text-center transition-all";
-
-                        }
-
-
-                        if (resultLabel) {
-                            resultLabel.innerText = "BENIGN";
-                        }
-
-
-                        if (resultSubtitle) {
-
-                            resultSubtitle.innerText =
-                                "Low risk profile within safe diagnostic ranges.";
-
-                        }
-
-
-                        if (actionText) {
-
-                            actionText.innerText =
-                                "Parameters indicate a low-risk profile. Continue routine patient monitoring according to standard clinical protocol.";
-
-                        }
-
-                    }
-
-
-                    // =================================================
-                    // RISK SCORE
-                    // =================================================
-
-                    const riskScore =
-                        Number(data.risk_score);
-
-
-                    const confidence =
-                        Number(data.confidence);
-
-
-                    const safeRisk = Number.isFinite(riskScore)
-                        ? Math.min(Math.max(riskScore, 0), 100)
-                        : 0;
-
-
-                    const safeConfidence = Number.isFinite(confidence)
-                        ? Math.min(Math.max(confidence, 0), 100)
-                        : 0;
-
-
-                    const riskScoreVal =
-                        document.getElementById("riskScoreVal");
-
-                    const riskBar =
-                        document.getElementById("riskBar");
-
-                    const confidenceVal =
-                        document.getElementById("confidenceVal");
-
-                    const confidenceBar =
-                        document.getElementById("confidenceBar");
-
-
-                    if (riskScoreVal) {
-
-                        riskScoreVal.innerText =
-                            `${safeRisk.toFixed(1)}%`;
-
-                    }
-
-
-                    if (riskBar) {
-
-                        riskBar.style.width =
-                            `${safeRisk}%`;
-
-                    }
-
-
-                    if (confidenceVal) {
-
-                        confidenceVal.innerText =
-                            `${safeConfidence.toFixed(1)}%`;
-
-                    }
-
-
-                    if (confidenceBar) {
-
-                        confidenceBar.style.width =
-                            `${safeConfidence}%`;
-
-                    }
-
-                }
-
-
-                // =================================================
-                // SERVER ERROR
-                // =================================================
-
-                else {
-
-                    const errorMessage =
-                        data?.error ||
-                        "Failed to process diagnosis.";
-
-                    alert(
-                        `Inference Error: ${errorMessage}`
+                const idleState =
+                    document.getElementById(
+                        "idleState"
                     );
 
+                const resultBox =
+                    document.getElementById(
+                        "resultBox"
+                    );
+
+
+                if (!submitBtn) return;
+
+
+                // Validate
+                const requiredFields =
+                    form.querySelectorAll(
+                        "[required]"
+                    );
+
+                for (const field of requiredFields) {
+
+                    if (!field.value) {
+
+                        field.focus();
+
+                        alert(
+                            "Please complete all diagnostic parameters."
+                        );
+
+                        return;
+                    }
                 }
 
-            }
 
-
-            // =====================================================
-            // CONNECTION ERROR
-            // =====================================================
-
-            catch (err) {
-
-                console.error(
-                    "Prediction request failed:",
-                    err
-                );
-
-
-                alert(
-                    "Server Connection Failed. Please check your Flask API and Vercel deployment logs."
-                );
-
-            }
-
-
-            // =====================================================
-            // RESTORE BUTTON
-            // =====================================================
-
-            finally {
-
-                submitBtn.disabled = false;
-
+                submitBtn.disabled = true;
 
                 submitBtn.innerHTML = `
-                    <span>
-                        Execute Diagnostic Assessment
-                    </span>
-
                     <svg
-                        class="w-4 h-4 text-white"
+                        class="animate-spin h-4 w-4 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
                         fill="none"
-                        stroke="currentColor"
                         viewBox="0 0 24 24"
                     >
+                        <circle
+                            class="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            stroke-width="4"
+                        ></circle>
+
                         <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M14 5l7 7m0 0l-7 7m7-7H3"
-                        />
+                            class="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
                     </svg>
+
+                    <span>
+                        Running Inference Engine...
+                    </span>
                 `;
 
+
+                const formData =
+                    new FormData(form);
+
+                const payload = {};
+
+                formData.forEach(
+                    (value, key) => {
+                        payload[key] = value;
+                    }
+                );
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/predict",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify(
+                                        payload
+                                    )
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (
+                        response.ok &&
+                        data.status === "success"
+                    ) {
+
+                        if (idleState) {
+                            idleState.classList.add(
+                                "hidden"
+                            );
+                        }
+
+                        if (resultBox) {
+                            resultBox.classList.remove(
+                                "hidden"
+                            );
+                        }
+
+
+                        const statusBanner =
+                            document.getElementById(
+                                "statusBanner"
+                            );
+
+                        const resultLabel =
+                            document.getElementById(
+                                "resultLabel"
+                            );
+
+                        const resultSubtitle =
+                            document.getElementById(
+                                "resultSubtitle"
+                            );
+
+                        const actionText =
+                            document.getElementById(
+                                "actionText"
+                            );
+
+
+                        if (
+                            data.diagnosis ===
+                            "Malignant"
+                        ) {
+
+                            if (statusBanner) {
+
+                                statusBanner.className =
+                                    "p-5 rounded-2xl border border-rose-500/30 bg-rose-500/10 text-rose-400 shadow-rose-900/10";
+                            }
+
+                            if (resultLabel) {
+                                resultLabel.textContent =
+                                    "MALIGNANT";
+                            }
+
+                            if (resultSubtitle) {
+                                resultSubtitle.textContent =
+                                    "Elevated risk indicators detected.";
+                            }
+
+                            if (actionText) {
+                                actionText.textContent =
+                                    "High likelihood of malignancy detected. Flag for immediate secondary clinical review, additional diagnostic imaging, and biopsy verification.";
+                            }
+
+                        } else {
+
+                            if (statusBanner) {
+
+                                statusBanner.className =
+                                    "p-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 shadow-emerald-900/10";
+                            }
+
+                            if (resultLabel) {
+                                resultLabel.textContent =
+                                    "BENIGN";
+                            }
+
+                            if (resultSubtitle) {
+                                resultSubtitle.textContent =
+                                    "Low risk profile within safe diagnostic ranges.";
+                            }
+
+                            if (actionText) {
+                                actionText.textContent =
+                                    "Parameters indicate a low-risk profile. Continue routine patient monitoring according to standard clinical protocol.";
+                            }
+                        }
+
+
+                        const risk =
+                            Number(
+                                data.risk_score || 0
+                            );
+
+                        const confidence =
+                            Number(
+                                data.confidence || 0
+                            );
+
+
+                        const riskValue =
+                            document.getElementById(
+                                "riskScoreVal"
+                            );
+
+                        const riskBar =
+                            document.getElementById(
+                                "riskBar"
+                            );
+
+                        const confidenceValue =
+                            document.getElementById(
+                                "confidenceVal"
+                            );
+
+                        const confidenceBar =
+                            document.getElementById(
+                                "confidenceBar"
+                            );
+
+
+                        if (riskValue) {
+                            riskValue.textContent =
+                                `${risk}%`;
+                        }
+
+                        if (riskBar) {
+                            riskBar.style.width =
+                                `${risk}%`;
+                        }
+
+                        if (confidenceValue) {
+                            confidenceValue.textContent =
+                                `${confidence}%`;
+                        }
+
+                        if (confidenceBar) {
+                            confidenceBar.style.width =
+                                `${confidence}%`;
+                        }
+
+
+                    } else {
+
+                        alert(
+                            `Inference Error: ${
+                                data.error ||
+                                "Failed to process diagnosis."
+                            }`
+                        );
+                    }
+
+                } catch (error) {
+
+                    console.error(
+                        "Prediction error:",
+                        error
+                    );
+
+                    alert(
+                        "Server Connection Failed. Check the Vercel function logs."
+                    );
+
+                } finally {
+
+                    submitBtn.disabled = false;
+
+                    submitBtn.innerHTML = `
+                        <span>
+                            Execute Diagnostic Assessment
+                        </span>
+
+                        <svg
+                            class="w-4 h-4 text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M14 5l7 7m0 0l-7 7m7-7H3"
+                            />
+                        </svg>
+                    `;
+                }
             }
-
-        });
-
+        );
     }
 
 
     // =========================================================
-    // 5. AI CHAT ASSISTANT
+    // CHAT ASSISTANT
     // =========================================================
 
     function scrollToBottom() {
 
-        if (!chatMessages) {
-            return;
-        }
-
+        if (!chatMessages) return;
 
         requestAnimationFrame(() => {
 
             chatMessages.scrollTop =
                 chatMessages.scrollHeight;
-
         });
-
     }
 
 
     function toggleChat() {
 
-        if (!chatBox) {
-            return;
-        }
+        if (!chatBox) return;
 
-
-        const isHidden =
-            chatBox.classList.contains("hidden");
-
-
-        if (!isHidden) {
-
-            chatBox.classList.add(
-                "opacity-0",
-                "scale-95"
+        const hidden =
+            chatBox.classList.contains(
+                "hidden"
             );
 
 
-            setTimeout(() => {
+        if (hidden) {
 
-                chatBox.classList.add("hidden");
-
-            }, 200);
-
-
-            if (chatIconOpen) {
-                chatIconOpen.classList.remove("hidden");
-            }
-
-
-            if (chatIconClose) {
-                chatIconClose.classList.add("hidden");
-            }
-
-
-            if (toggleBtn) {
-                toggleBtn.setAttribute(
-                    "aria-expanded",
-                    "false"
-                );
-            }
-
-        }
-
-
-        else {
-
-            chatBox.classList.remove("hidden");
-
+            chatBox.classList.remove(
+                "hidden"
+            );
 
             setTimeout(() => {
 
@@ -563,27 +835,47 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             if (chatIconOpen) {
-                chatIconOpen.classList.add("hidden");
-            }
-
-
-            if (chatIconClose) {
-                chatIconClose.classList.remove("hidden");
-            }
-
-
-            if (toggleBtn) {
-                toggleBtn.setAttribute(
-                    "aria-expanded",
-                    "true"
+                chatIconOpen.classList.add(
+                    "hidden"
                 );
             }
 
+            if (chatIconClose) {
+                chatIconClose.classList.remove(
+                    "hidden"
+                );
+            }
 
             scrollToBottom();
 
-        }
+        } else {
 
+            chatBox.classList.add(
+                "opacity-0",
+                "scale-95"
+            );
+
+            setTimeout(() => {
+
+                chatBox.classList.add(
+                    "hidden"
+                );
+
+            }, 200);
+
+
+            if (chatIconOpen) {
+                chatIconOpen.classList.remove(
+                    "hidden"
+                );
+            }
+
+            if (chatIconClose) {
+                chatIconClose.classList.add(
+                    "hidden"
+                );
+            }
+        }
     }
 
 
@@ -603,424 +895,210 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    // =========================================================
-    // SAFE HTML ESCAPING
-    // =========================================================
+    function appendMessage(
+        sender,
+        text
+    ) {
 
-    function escapeHtml(value) {
-
-        const div =
-            document.createElement("div");
-
-        div.textContent = value;
-
-        return div.innerHTML;
-
-    }
-
-
-    // =========================================================
-    // APPEND CHAT MESSAGE
-    // =========================================================
-
-    function appendMessage(sender, text) {
-
-        if (!chatMessages) {
-            return;
-        }
-
+        if (!chatMessages) return;
 
         const isUser =
             sender === "user";
 
-
-        const msgDiv =
+        const message =
             document.createElement("div");
 
-
-        msgDiv.className =
+        message.className =
             `flex gap-2.5 items-start ${
-                isUser ? "flex-row-reverse" : ""
+                isUser
+                    ? "flex-row-reverse"
+                    : ""
             }`;
 
-
-        const safeText =
-            isUser
-                ? escapeHtml(text)
-                : text;
-
-
-        msgDiv.innerHTML = `
-
-            <div
-                class="w-6 h-6 rounded-lg ${
-                    isUser
-                        ? "bg-zinc-800 border border-zinc-700 text-zinc-300"
-                        : "bg-pink-500/10 border border-pink-500/20 text-pink-400"
-                } flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 font-mono"
-            >
+        message.innerHTML = `
+            <div class="w-6 h-6 rounded-lg ${
+                isUser
+                    ? "bg-zinc-800 border border-zinc-700 text-zinc-300"
+                    : "bg-pink-500/10 border border-pink-500/20 text-pink-400"
+            } flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 font-mono">
                 ${isUser ? "YOU" : "AI"}
             </div>
 
-
-            <div
-                class="${
-                    isUser
-                        ? "bg-pink-600 text-white"
-                        : "bg-zinc-900 border border-zinc-800 text-zinc-300"
-                } p-3 rounded-2xl ${
-                    isUser
-                        ? "rounded-tr-xs"
-                        : "rounded-tl-xs"
-                } max-w-[85%] leading-relaxed"
-            >
-                ${safeText}
+            <div class="${
+                isUser
+                    ? "bg-pink-600 text-white"
+                    : "bg-zinc-900 border border-zinc-800 text-zinc-300"
+            } p-3 rounded-2xl max-w-[85%] leading-relaxed">
+                ${text}
             </div>
-
         `;
 
-
-        chatMessages.appendChild(msgDiv);
+        chatMessages.appendChild(
+            message
+        );
 
         scrollToBottom();
-
     }
 
-
-    // =========================================================
-    // AI RESPONSE ENGINE
-    // =========================================================
 
     function getAiResponse(query) {
 
         const q =
-            query
-                .toLowerCase()
-                .trim();
+            query.toLowerCase().trim();
 
-
-        // -------------------------------------------------------
-        // PLATFORM
-        // -------------------------------------------------------
 
         if (
-            /(what|how).*(website|app|platform|tool|system|purpose|do|use)/i.test(q) ||
             q.includes("help") ||
-            q.includes("what is oncobredict") ||
             q.includes("what is oncopredict")
         ) {
 
             return `
-                <strong>OncoPredict</strong> is an AI decision support tool.
-                It processes clinical inputs to estimate breast cancer risk,
-                explains model decisions through feature importance,
-                and maps outputs to risk-stratification workflows.
+                <strong>OncoPredict</strong>
+                is an AI decision-support prototype
+                for breast cancer risk assessment.
             `;
-
         }
 
 
-        // -------------------------------------------------------
-        // BREAST CANCER
-        // -------------------------------------------------------
-
         if (
-            /(what|explain|define).*(breast cancer|cancer|malignan)/i.test(q) ||
-            /(whta|cancr|tumor)/i.test(q)
+            q.includes("benign") ||
+            q.includes("malignant") ||
+            q.includes("tumor")
         ) {
 
             return `
-                <strong>Breast cancer</strong> occurs when abnormal breast
-                cells grow uncontrollably and may form tumors.
-                OncoPredict focuses on risk estimation using clinical,
-                pathological, demographic, and lifestyle indicators.
+                <strong>Benign</strong> tumors are
+                non-cancerous and localized, while
+                <strong>malignant</strong> tumors are
+                cancerous and may invade surrounding
+                tissues.
             `;
-
         }
 
 
-        // -------------------------------------------------------
-        // BENIGN / MALIGNANT
-        // -------------------------------------------------------
-
         if (
-            /(benign|malignant|difference|type|tumor)/i.test(q)
+            q.includes("symptom") ||
+            q.includes("warning")
         ) {
 
             return `
-                <strong>Benign tumors</strong> are generally non-cancerous
-                and localized, while <strong>malignant tumors</strong>
-                are cancerous and may invade surrounding tissues or spread
-                to other parts of the body.
+                Common warning signs can include a
+                new breast lump, changes in breast
+                size or shape, skin changes, nipple
+                inversion, or unusual discharge.
             `;
-
         }
 
 
-        // -------------------------------------------------------
-        // SYMPTOMS
-        // -------------------------------------------------------
-
         if (
-            /(symptom|sign|warning|look for|detect)/i.test(q)
+            q.includes("risk factor") ||
+            q.includes("genetic") ||
+            q.includes("brca")
         ) {
 
             return `
-                Common warning signs may include:<br>
-                • A breast lump or unusual thickening<br>
-                • Changes in breast size or shape<br>
-                • Skin dimpling or unusual skin changes<br>
-                • Nipple inversion or abnormal discharge
+                Important risk factors include age,
+                family history, inherited mutations
+                such as BRCA1/BRCA2, dense breast
+                tissue, and certain hormonal factors.
             `;
-
         }
 
 
-        // -------------------------------------------------------
-        // RISK FACTORS
-        // -------------------------------------------------------
-
         if (
-            /(risk factor|cause|hereditary|genetic|brca|family history)/i.test(q)
+            q.includes("model") ||
+            q.includes("lightgbm") ||
+            q.includes("algorithm")
         ) {
 
             return `
-                Important breast cancer risk factors can include
-                <strong>BRCA1/BRCA2 mutations</strong>, increasing age,
-                family or personal history, dense breast tissue,
-                and certain hormonal or lifestyle factors.
+                OncoPredict uses a
+                <strong>LightGBM</strong> machine-learning
+                pipeline for tabular clinical risk
+                estimation.
             `;
-
         }
 
 
-        // -------------------------------------------------------
-        // MODEL
-        // -------------------------------------------------------
-
         if (
-            /(model|lightgbm|algorithm|tech stack|how it works|architecture|predict)/i.test(q)
+            q.includes("accuracy") ||
+            q.includes("metric") ||
+            q.includes("auc") ||
+            q.includes("precision") ||
+            q.includes("recall")
         ) {
 
             return `
-                The backend uses a
-                <strong>LightGBM (Light Gradient Boosting Machine)</strong>
-                pipeline designed for tabular clinical feature processing.
-                The model evaluates the supplied feature vector and returns
-                a classification together with risk and confidence values.
+                The dashboard reports the project's
+                configured validation metrics,
+                including ROC-AUC, sensitivity,
+                precision, and inference latency.
             `;
-
         }
 
 
-        // -------------------------------------------------------
-        // METRICS
-        // -------------------------------------------------------
-
         if (
-            /(metric|accuracy|roc|auc|precision|recall|sensitivity|latency|speed)/i.test(q)
+            q.includes("privacy") ||
+            q.includes("security")
         ) {
 
             return `
-                Current validation figures displayed by the platform:<br>
-                • <strong>ROC-AUC:</strong> 0.964<br>
-                • <strong>Sensitivity (Recall):</strong> 94.8%<br>
-                • <strong>Precision:</strong> 92.3%<br>
-                • <strong>Inference Latency:</strong> 11.4ms
-            `;
-
-        }
-
-
-        // -------------------------------------------------------
-        // FEATURE IMPORTANCE / SHAP
-        // -------------------------------------------------------
-
-        if (
-            /(shap|feature|importance|weight|driver|factor)/i.test(q)
-        ) {
-
-            return `
-                The displayed top diagnostic drivers are:<br>
-                1. <strong>Biopsy Pathological Grade:</strong> 0.284<br>
-                2. <strong>Tumor Dimensions:</strong> 0.210<br>
-                3. <strong>Genetic Biomarkers:</strong> 0.185<br>
-                4. <strong>Patient Age & Menopause State:</strong> 0.142
-            `;
-
-        }
-
-
-        // -------------------------------------------------------
-        // RISK TIERS
-        // -------------------------------------------------------
-
-        if (
-            /(tier|protocol|guideline|low risk|moderate risk|high risk|action|workflow)/i.test(q)
-        ) {
-
-            return `
-                The platform presents three risk tiers:<br>
-                🟢 <strong>Low (&lt;30%):</strong>
-                Standard baseline monitoring.<br>
-                🟡 <strong>Moderate (30–70%):</strong>
-                Secondary evaluation and monitoring.<br>
-                🔴 <strong>High (&gt;70%):</strong>
-                Priority clinical review and diagnostic verification.
-            `;
-
-        }
-
-
-        // -------------------------------------------------------
-        // DATASET
-        // -------------------------------------------------------
-
-        if (
-            /(data|dataset|training|synthetic|faker|validation|sample)/i.test(q)
-        ) {
-
-            return `
-                The platform is designed around clinical-style tabular
-                inputs and can be evaluated using real or synthetic
-                datasets. Synthetic data pipelines can be useful for
-                testing edge cases while avoiding exposure of real patient
+                The application is designed as an
+                inference-oriented prototype and should
+                not be used to store identifiable patient
                 information.
             `;
-
         }
 
 
-        // -------------------------------------------------------
-        // PRIVACY
-        // -------------------------------------------------------
-
         if (
-            /(privacy|security|hipaa|safe|store|data protection)/i.test(q)
-        ) {
-
-            return `
-                OncoPredict is designed as an inference-oriented decision
-                support interface. Avoid entering personally identifiable
-                or sensitive patient information into demonstration
-                environments unless the deployment has been appropriately
-                secured and configured.
-            `;
-
-        }
-
-
-        // -------------------------------------------------------
-        // MEDICAL DISCLAIMER
-        // -------------------------------------------------------
-
-        if (
-            /(doctor|medical advice|replace doctor|diagnostic|diagnosis)/i.test(q)
+            q.includes("doctor") ||
+            q.includes("medical advice") ||
+            q.includes("diagnosis")
         ) {
 
             return `
                 ⚠️ <strong>Medical Disclaimer:</strong>
-                OncoPredict is an AI screening and decision-support concept.
-                It does not replace a qualified healthcare professional,
-                pathology report, imaging interpretation, or formal clinical
-                diagnosis.
+                OncoPredict is a decision-support prototype
+                and does not replace professional medical
+                diagnosis, pathology, or clinical judgment.
             `;
-
         }
 
 
-        // -------------------------------------------------------
-        // DEPLOYMENT
-        // -------------------------------------------------------
-
         if (
-            /(host|deploy|vercel|flask|backend|api)/i.test(q)
+            q.includes("hello") ||
+            q.includes("hi") ||
+            q.includes("hey")
         ) {
 
             return `
-                The application uses a Python/Flask backend and exposes
-                prediction functionality through a REST-style API endpoint.
-                The frontend is structured for deployment through Vercel
-                using the project's deployment configuration.
+                Hello! I am your
+                <strong>OncoPredict AI Assistant</strong>.
+                Ask me about the model, risk factors,
+                features, or the dashboard.
             `;
-
         }
 
-
-        // -------------------------------------------------------
-        // CREATOR
-        // -------------------------------------------------------
-
-        if (
-            /(who|creator|developer|author|built|made|mobeen)/i.test(q)
-        ) {
-
-            return `
-                OncoPredict was engineered by
-                <strong>Mobeen Fatima</strong>, with the project focused
-                on machine learning, predictive modeling, synthetic data
-                engineering, and health-tech web application development.
-            `;
-
-        }
-
-
-        // -------------------------------------------------------
-        // GREETING
-        // -------------------------------------------------------
-
-        if (
-            /^(hi|hello|hey|greetings|good morning|good evening)\b/i.test(q)
-        ) {
-
-            return `
-                Hello! I am your OncoPredict AI Assistant.
-                You can ask me about <strong>breast cancer risk factors</strong>,
-                <strong>LightGBM</strong>,
-                <strong>model metrics</strong>,
-                <strong>feature importance</strong>,
-                or <strong>risk tiers</strong>.
-            `;
-
-        }
-
-
-        // -------------------------------------------------------
-        // DEFAULT
-        // -------------------------------------------------------
 
         return `
-            I can answer questions about
-            <strong>OncoPredict's purpose</strong>,
-            <strong>breast cancer risk factors</strong>,
-            <strong>LightGBM</strong>,
-            <strong>model metrics</strong>,
-            <strong>feature importance</strong>,
-            and <strong>risk stratification</strong>.
-            What would you like to explore?
+            I can help with
+            <strong>OncoPredict</strong>,
+            breast cancer risk factors,
+            LightGBM,
+            model metrics,
+            and dashboard functionality.
         `;
-
     }
 
 
-    // =========================================================
-    // SEND CHAT MESSAGE
-    // =========================================================
-
     function handleSend(text) {
 
-        if (!text || !text.trim()) {
-            return;
-        }
-
-
-        const cleanedText =
-            text.trim();
-
+        if (!text.trim()) return;
 
         appendMessage(
             "user",
-            cleanedText
+            text
         );
 
 
@@ -1029,7 +1107,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 "suggested-queries"
             );
 
-
         if (suggestions) {
             suggestions.remove();
         }
@@ -1037,71 +1114,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setTimeout(() => {
 
-            const botReply =
-                getAiResponse(cleanedText);
-
-
             appendMessage(
                 "ai",
-                botReply
+                getAiResponse(text)
             );
 
         }, 400);
-
     }
 
-
-    // =========================================================
-    // QUICK QUERY FUNCTION
-    // IMPORTANT:
-    // Exposed globally because HTML uses onclick=""
-    // =========================================================
-
-    window.sendQuickQuery = function (text) {
-
-        handleSend(text);
-
-    };
-
-
-    // =========================================================
-    // CHAT FORM SUBMIT
-    // =========================================================
 
     if (chatForm) {
 
         chatForm.addEventListener(
             "submit",
-            (e) => {
+            event => {
 
-                e.preventDefault();
-
-
-                if (!chatInput) {
-                    return;
-                }
-
+                event.preventDefault();
 
                 const text =
-                    chatInput.value;
+                    chatInput
+                        ? chatInput.value
+                        : "";
 
-
-                chatInput.value = "";
-
+                if (chatInput) {
+                    chatInput.value = "";
+                }
 
                 handleSend(text);
-
-
-                chatInput.focus();
-
             }
         );
-
     }
 
 
     // =========================================================
-    // 6. HERO DYNAMIC SIMULATOR
+    // QUICK CHAT BUTTONS
+    // =========================================================
+
+    window.sendQuickQuery =
+        function (text) {
+
+            handleSend(text);
+        };
+
+
+    // =========================================================
+    // HERO SIMULATOR
     // =========================================================
 
     const simTumorInput =
@@ -1155,7 +1212,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 simTumorInput.value
             );
 
-
         const biopsyGrade =
             parseInt(
                 simBiopsyInput.value,
@@ -1163,19 +1219,10 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
 
-        if (
-            !Number.isFinite(tumorSize) ||
-            !Number.isFinite(biopsyGrade)
-        ) {
-            return;
-        }
-
-
         if (simTumorVal) {
 
             simTumorVal.textContent =
                 `${tumorSize.toFixed(1)} cm`;
-
         }
 
 
@@ -1183,11 +1230,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             simBiopsyVal.textContent =
                 `Stage ${biopsyGrade}`;
-
         }
 
 
-        // Demonstration-only simulator formula.
         let calculatedRisk =
             Math.round(
                 (tumorSize / 6.0) * 45 +
@@ -1210,7 +1255,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             simRiskPercent.textContent =
                 `${calculatedRisk}%`;
-
         }
 
 
@@ -1218,7 +1262,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             simRiskBar.style.width =
                 `${calculatedRisk}%`;
-
         }
 
 
@@ -1232,9 +1275,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 simTier.className =
                     "text-emerald-400 font-medium";
 
-            }
-
-            else if (calculatedRisk < 70) {
+            } else if (
+                calculatedRisk < 70
+            ) {
 
                 simTier.textContent =
                     "Moderate Priority";
@@ -1242,20 +1285,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 simTier.className =
                     "text-amber-400 font-medium";
 
-            }
-
-            else {
+            } else {
 
                 simTier.textContent =
                     "High Clinical Urgency";
 
                 simTier.className =
                     "text-pink-400 font-medium";
-
             }
-
         }
-
     }
 
 
@@ -1269,22 +1307,17 @@ document.addEventListener("DOMContentLoaded", () => {
             updateHeroSimulation
         );
 
-
         simBiopsyInput.addEventListener(
             "input",
             updateHeroSimulation
         );
 
-
-        // FIX:
-        // Calculate the correct initial value.
         updateHeroSimulation();
-
     }
 
 
     // =========================================================
-    // 7. NAVBAR ACTIVE SECTION MONITORING
+    // NAVBAR ACTIVE SECTION
     // =========================================================
 
     const sections =
@@ -1292,99 +1325,76 @@ document.addEventListener("DOMContentLoaded", () => {
             "section[id], main[id]"
         );
 
-
     const navLinks =
         document.querySelectorAll(
             ".nav-link"
         );
 
 
-    function updateActiveNav() {
-
-        let current = "";
-
-
-        sections.forEach((section) => {
-
-            const sectionTop =
-                section.offsetTop - 140;
-
-
-            if (
-                window.scrollY >= sectionTop
-            ) {
-
-                current =
-                    section.getAttribute(
-                        "id"
-                    );
-
-            }
-
-        });
-
-
-        navLinks.forEach((link) => {
-
-            link.classList.remove(
-                "text-pink-400"
-            );
-
-            link.classList.add(
-                "text-zinc-400"
-            );
-
-
-            if (
-                link.getAttribute("href") ===
-                `#${current}`
-            ) {
-
-                link.classList.add(
-                    "text-pink-400"
-                );
-
-                link.classList.remove(
-                    "text-zinc-400"
-                );
-
-            }
-
-        });
-
-    }
-
-
     window.addEventListener(
         "scroll",
-        updateActiveNav,
-        { passive: true }
-    );
+        () => {
+
+            let current = "";
+
+            sections.forEach(
+                section => {
+
+                    const sectionTop =
+                        section.offsetTop -
+                        120;
+
+                    if (
+                        window.scrollY >=
+                        sectionTop
+                    ) {
+
+                        current =
+                            section.getAttribute(
+                                "id"
+                            );
+                    }
+                }
+            );
 
 
-    // Run once on initial load.
-    updateActiveNav();
+            navLinks.forEach(
+                link => {
+
+                    link.classList.remove(
+                        "text-pink-400"
+                    );
+
+                    link.classList.add(
+                        "text-zinc-400"
+                    );
 
 
-    // =========================================================
-    // 8. ESCAPE KEY CLOSES CHAT
-    // =========================================================
+                    if (
+                        link.getAttribute(
+                            "href"
+                        ) ===
+                        `#${current}`
+                    ) {
 
-    document.addEventListener(
-        "keydown",
-        (event) => {
+                        link.classList.add(
+                            "text-pink-400"
+                        );
 
-            if (
-                event.key === "Escape" &&
-                chatBox &&
-                !chatBox.classList.contains("hidden")
-            ) {
-
-                toggleChat();
-
-            }
-
+                        link.classList.remove(
+                            "text-zinc-400"
+                        );
+                    }
+                }
+            );
         }
     );
+
+
+    // =========================================================
+    // INITIALIZE
+    // =========================================================
+
+    loadFeaturesFromBackend();
 
 });
