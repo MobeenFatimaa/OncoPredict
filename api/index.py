@@ -1,20 +1,42 @@
 import os
 import joblib
 import numpy as np
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, Response
 
 
 # =========================================================
-# PATH CONFIGURATION
+# PATH CONFIGURATION (VERCEL & LOCAL COMPATIBLE)
 # =========================================================
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
 
-TEMPLATE_DIR = os.path.join(PROJECT_ROOT, "templates")
-STATIC_DIR = os.path.join(PROJECT_ROOT, "static")
-MODEL_DIR = os.path.join(PROJECT_ROOT, "model")
+# Check potential model directory paths (Vercel deployment vs Local)
+candidate_model_dirs = [
+    os.path.join(CURRENT_DIR, "model"),
+    os.path.abspath(os.path.join(CURRENT_DIR, "..", "model")),
+    os.path.join(os.getcwd(), "model")
+]
 
+MODEL_DIR = None
+for path in candidate_model_dirs:
+    if os.path.exists(path):
+        MODEL_DIR = path
+        break
+
+if MODEL_DIR is None:
+    MODEL_DIR = candidate_model_dirs[0]
+
+# Check potential static/template directory paths
+candidate_roots = [
+    os.path.abspath(os.path.join(CURRENT_DIR, "..")),
+    CURRENT_DIR,
+    os.getcwd()
+]
+
+TEMPLATE_DIR = next((os.path.join(r, "templates") for r in candidate_roots if os.path.exists(os.path.join(r, "templates"))), "templates")
+STATIC_DIR = next((os.path.join(r, "static") for r in candidate_roots if os.path.exists(os.path.join(r, "static"))), "static")
+
+PROJECT_ROOT = os.path.dirname(MODEL_DIR)
 MODEL_PATH = os.path.join(MODEL_DIR, "model.joblib")
 SCALER_PATH = os.path.join(MODEL_DIR, "scaler.joblib")
 FEATURES_PATH = os.path.join(MODEL_DIR, "feature_names.joblib")
@@ -29,6 +51,25 @@ app = Flask(
     template_folder=TEMPLATE_DIR,
     static_folder=STATIC_DIR
 )
+
+
+# =========================================================
+# FAVICON ROUTE (OP EMBEDDED SVG)
+# =========================================================
+
+@app.route('/favicon.ico')
+def favicon():
+    svg_data = """<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>
+        <defs>
+            <linearGradient id='grad' x1='0%' y1='100%' x2='100%' y2='0%'>
+                <stop offset='0%' style='stop-color:#db2777;' />
+                <stop offset='100%' style='stop-color:#f43f5e;' />
+            </linearGradient>
+        </defs>
+        <rect width='64' height='64' rx='16' fill='url(#grad)'/>
+        <text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='800' font-size='32'>OP</text>
+    </svg>"""
+    return Response(svg_data, mimetype='image/svg+xml')
 
 
 # =========================================================
@@ -48,7 +89,6 @@ load_errors = []
 def safe_load(path, name):
     """
     Load a joblib file independently.
-
     This prevents one missing/corrupted file from causing
     every other model component to become unavailable.
     """
@@ -60,9 +100,7 @@ def safe_load(path, name):
             return None
 
         obj = joblib.load(path)
-
         print(f"✅ Loaded {name}: {path}")
-
         return obj
 
     except Exception as exc:
@@ -86,13 +124,10 @@ feature_names = safe_load(FEATURES_PATH, "feature_names.joblib")
 # =========================================================
 
 if feature_names is not None:
-
     try:
         feature_names = list(feature_names)
         feature_names = [str(feature) for feature in feature_names]
-
     except Exception as exc:
-
         print(f"❌ Invalid feature_names format: {exc}")
         feature_names = []
 
@@ -106,7 +141,6 @@ def recover_feature_names_from_model():
     Try to recover feature names directly from a LightGBM model
     if feature_names.joblib could not be loaded.
     """
-
     global feature_names
 
     if feature_names:
@@ -116,52 +150,33 @@ def recover_feature_names_from_model():
         return
 
     try:
-
         # LightGBM sklearn API
         if hasattr(model, "booster_"):
-
             booster = model.booster_
-
             if hasattr(booster, "feature_name"):
-
                 recovered = booster.feature_name()
-
                 if recovered:
                     feature_names = list(recovered)
-                    print(
-                        f"✅ Recovered {len(feature_names)} "
-                        "features directly from LightGBM model."
-                    )
+                    print(f"✅ Recovered {len(feature_names)} features directly from LightGBM model.")
                     return
 
         # LightGBM Booster directly
         if hasattr(model, "feature_name"):
-
             recovered = model.feature_name()
-
             if recovered:
                 feature_names = list(recovered)
-                print(
-                    f"✅ Recovered {len(feature_names)} "
-                    "features from model."
-                )
+                print(f"✅ Recovered {len(feature_names)} features from model.")
                 return
 
         # Generic sklearn fallback
         if hasattr(model, "feature_names_in_"):
-
             recovered = model.feature_names_in_
-
             if recovered is not None:
                 feature_names = list(recovered)
-                print(
-                    f"✅ Recovered {len(feature_names)} "
-                    "features from feature_names_in_."
-                )
+                print(f"✅ Recovered {len(feature_names)} features from feature_names_in_.")
                 return
 
     except Exception as exc:
-
         error = f"Feature recovery failed: {exc}"
         print(f"❌ {error}")
         load_errors.append(error)
@@ -194,7 +209,6 @@ print("=" * 60)
 
 @app.route("/")
 def home():
-
     return render_template(
         "index.html",
         features=feature_names
@@ -207,7 +221,6 @@ def home():
 
 @app.route("/api/health", methods=["GET"])
 def health():
-
     return jsonify({
         "status": "ok",
         "model_loaded": model is not None,
@@ -227,7 +240,6 @@ def health():
 
 @app.route("/api/features", methods=["GET"])
 def get_features():
-
     return jsonify({
         "status": "success",
         "count": len(feature_names),
@@ -241,7 +253,6 @@ def get_features():
 
 @app.route("/api/predict", methods=["POST"])
 def predict():
-
     if model is None:
         return jsonify({
             "status": "error",
@@ -264,7 +275,6 @@ def predict():
         }), 500
 
     try:
-
         data = request.get_json(force=True)
 
         if not data:
@@ -273,48 +283,27 @@ def predict():
                 "error": "No data payload received."
             }), 400
 
-        # =================================================
         # BUILD INPUT VECTOR
-        # =================================================
-
         input_vector = []
-
         for feature in feature_names:
-
             value = data.get(feature, 0)
-
             try:
                 input_vector.append(float(value))
-
             except (ValueError, TypeError):
                 input_vector.append(0.0)
 
-        # =================================================
         # NUMPY ARRAY
-        # =================================================
-
         formatted_input = np.asarray(
             input_vector,
             dtype=float
         ).reshape(1, -1)
 
-        # =================================================
         # SCALING
-        # =================================================
-
         scaled_input = scaler.transform(formatted_input)
 
-        # =================================================
         # MODEL PREDICTION
-        # =================================================
-
-        prediction = int(
-            model.predict(scaled_input)[0]
-        )
-
-        probabilities = model.predict_proba(
-            scaled_input
-        )[0]
+        prediction = int(model.predict(scaled_input)[0])
+        probabilities = model.predict_proba(scaled_input)[0]
 
         # Assume class 1 = malignant
         if len(probabilities) > 1:
@@ -322,26 +311,12 @@ def predict():
         else:
             malignant_prob = float(probabilities[0])
 
-        # =================================================
         # RESULT
-        # =================================================
-
-        diagnosis = (
-            "Malignant"
-            if prediction == 1
-            else "Benign"
-        )
-
-        risk_score = round(
-            malignant_prob * 100,
-            2
-        )
-
+        diagnosis = "Malignant" if prediction == 1 else "Benign"
+        risk_score = round(malignant_prob * 100, 2)
         confidence = round(
             (
-                malignant_prob
-                if prediction == 1
-                else 1 - malignant_prob
+                malignant_prob if prediction == 1 else 1 - malignant_prob
             ) * 100,
             2
         )
@@ -354,9 +329,7 @@ def predict():
         }), 200
 
     except Exception as exc:
-
         print(f"❌ Prediction error: {exc}")
-
         return jsonify({
             "status": "error",
             "error": str(exc)
@@ -368,7 +341,6 @@ def predict():
 # =========================================================
 
 if __name__ == "__main__":
-
     app.run(
         debug=True,
         host="0.0.0.0",
