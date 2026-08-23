@@ -1398,3 +1398,11 @@ document.addEventListener("DOMContentLoaded", () => {
     loadFeaturesFromBackend();
 
 });
+document.addEventListener("DOMContentLoaded", function () {
+    const featureCount = document.getElementById("featureCount");
+    const featureItems = document.querySelectorAll(".feature-item");
+
+    if (featureCount) {
+        featureCount.textContent = featureItems.length;
+    }
+});
