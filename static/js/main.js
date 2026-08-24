@@ -956,6 +956,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 <strong>OncoPredict</strong>
                 is an AI decision-support prototype
                 for breast cancer risk assessment.
+                It uses a machine-learning model to
+                estimate the likelihood of a benign
+                or malignant classification from the
+                provided diagnostic parameters.
             `;
         }
 
@@ -971,7 +975,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 non-cancerous and localized, while
                 <strong>malignant</strong> tumors are
                 cancerous and may invade surrounding
-                tissues.
+                tissues. OncoPredict uses the trained
+                classification model to estimate whether
+                the provided feature profile is more
+                consistent with a benign or malignant
+                result.
             `;
         }
 
@@ -1005,17 +1013,45 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
+        // =====================================================
+        // UPDATED MODEL RESPONSE
+        // SCIKIT-LEARN LOGISTIC REGRESSION
+        // =====================================================
+
         if (
             q.includes("model") ||
-            q.includes("lightgbm") ||
-            q.includes("algorithm")
+            q.includes("logistic regression") ||
+            q.includes("logistic") ||
+            q.includes("algorithm") ||
+            q.includes("scikit") ||
+            q.includes("sklearn") ||
+            q.includes("machine learning")
         ) {
 
             return `
-                OncoPredict uses a
-                <strong>LightGBM</strong> machine-learning
-                pipeline for tabular clinical risk
-                estimation.
+                <strong>OncoPredict uses a
+                scikit-learn Logistic Regression
+                classifier</strong> for its breast cancer
+                risk classification.
+
+                Logistic Regression is a supervised
+                machine-learning algorithm commonly used
+                for binary classification. In this system,
+                it evaluates the provided clinical and
+                diagnostic features and estimates the
+                probability of the input belonging to the
+                benign or malignant class.
+
+                Before prediction, the input features are
+                processed using the trained
+                <strong>scaler</strong> so that the feature
+                values are presented to the model in the
+                same numerical scale used during training.
+
+                The trained model is stored as
+                <strong>model.joblib</strong>, while the
+                scaler and feature configuration are stored
+                separately for consistent inference.
             `;
         }
 
@@ -1030,9 +1066,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
             return `
                 The dashboard reports the project's
-                configured validation metrics,
-                including ROC-AUC, sensitivity,
-                precision, and inference latency.
+                configured validation metrics, which can
+                include accuracy, ROC-AUC, precision,
+                recall, sensitivity, specificity, and
+                inference performance.
+
+                These metrics describe how the trained
+                Logistic Regression classifier performed
+                during model evaluation. They should be
+                interpreted together rather than relying
+                on accuracy alone.
             `;
         }
 
@@ -1062,6 +1105,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 OncoPredict is a decision-support prototype
                 and does not replace professional medical
                 diagnosis, pathology, or clinical judgment.
+                Predictions should be reviewed by qualified
+                healthcare professionals.
             `;
         }
 
@@ -1075,8 +1120,9 @@ document.addEventListener("DOMContentLoaded", () => {
             return `
                 Hello! I am your
                 <strong>OncoPredict AI Assistant</strong>.
-                Ask me about the model, risk factors,
-                features, or the dashboard.
+                Ask me about the Logistic Regression model,
+                risk factors, diagnostic features, model
+                metrics, or dashboard functionality.
             `;
         }
 
@@ -1084,9 +1130,9 @@ document.addEventListener("DOMContentLoaded", () => {
         return `
             I can help with
             <strong>OncoPredict</strong>,
+            scikit-learn Logistic Regression,
             breast cancer risk factors,
-            LightGBM,
-            model metrics,
+            model metrics, diagnostic features,
             and dashboard functionality.
         `;
     }
@@ -1398,11 +1444,22 @@ document.addEventListener("DOMContentLoaded", () => {
     loadFeaturesFromBackend();
 
 });
+
+
 document.addEventListener("DOMContentLoaded", function () {
-    const featureCount = document.getElementById("featureCount");
-    const featureItems = document.querySelectorAll(".feature-item");
+
+    const featureCount =
+        document.getElementById("featureCount");
+
+    const featureItems =
+        document.querySelectorAll(
+            ".feature-item"
+        );
 
     if (featureCount) {
-        featureCount.textContent = featureItems.length;
+
+        featureCount.textContent =
+            featureItems.length;
     }
+
 });
