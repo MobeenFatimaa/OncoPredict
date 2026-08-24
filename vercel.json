@@ -7,7 +7,9 @@
   ],
   "functions": {
     "api/index.py": {
-      "includeFiles": "model/**"
+      "includeFiles": [
+        "model/**"
+      ]
     }
   }
 }
