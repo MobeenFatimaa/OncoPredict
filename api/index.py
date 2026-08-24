@@ -10,11 +10,12 @@ from flask import Flask, render_template, request, jsonify, Response
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Check potential model directory paths (Vercel deployment vs Local)
+# Priority check for Vercel deployment structure:
+# os.getcwd() points to the root execution context in serverless
 candidate_model_dirs = [
-    os.path.join(CURRENT_DIR, "model"),
+    os.path.join(os.getcwd(), "model"),
     os.path.abspath(os.path.join(CURRENT_DIR, "..", "model")),
-    os.path.join(os.getcwd(), "model")
+    os.path.join(CURRENT_DIR, "model")
 ]
 
 MODEL_DIR = None
@@ -28,13 +29,19 @@ if MODEL_DIR is None:
 
 # Check potential static/template directory paths
 candidate_roots = [
+    os.getcwd(),
     os.path.abspath(os.path.join(CURRENT_DIR, "..")),
-    CURRENT_DIR,
-    os.getcwd()
+    CURRENT_DIR
 ]
 
-TEMPLATE_DIR = next((os.path.join(r, "templates") for r in candidate_roots if os.path.exists(os.path.join(r, "templates"))), "templates")
-STATIC_DIR = next((os.path.join(r, "static") for r in candidate_roots if os.path.exists(os.path.join(r, "static"))), "static")
+TEMPLATE_DIR = next(
+    (os.path.join(r, "templates") for r in candidate_roots if os.path.exists(os.path.join(r, "templates"))), 
+    "templates"
+)
+STATIC_DIR = next(
+    (os.path.join(r, "static") for r in candidate_roots if os.path.exists(os.path.join(r, "static"))), 
+    "static"
+)
 
 PROJECT_ROOT = os.path.dirname(MODEL_DIR)
 MODEL_PATH = os.path.join(MODEL_DIR, "model.joblib")
@@ -192,6 +199,8 @@ recover_feature_names_from_model()
 print("=" * 60)
 print("ONCOPREDICT INITIALIZATION")
 print("=" * 60)
+print(f"CWD          : {os.getcwd()}")
+print(f"CURRENT_DIR  : {CURRENT_DIR}")
 print(f"PROJECT_ROOT : {PROJECT_ROOT}")
 print(f"MODEL_DIR    : {MODEL_DIR}")
 print(f"Model loaded : {model is not None}")
@@ -223,6 +232,8 @@ def home():
 def health():
     return jsonify({
         "status": "ok",
+        "cwd": os.getcwd(),
+        "model_dir": MODEL_DIR,
         "model_loaded": model is not None,
         "scaler_loaded": scaler is not None,
         "feature_count": len(feature_names),
