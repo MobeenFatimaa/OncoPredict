@@ -6,7 +6,7 @@ An AI-powered breast cancer risk assessment prototype built with **Python, Sciki
 
 ## Live Demo
 
-**OncoPredict:** Add your deployed Vercel URL here.
+**OncoPredict:** (https://onco-predict-mu.vercel.app/)
 
 ## Features
 
