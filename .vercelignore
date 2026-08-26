@@ -2,7 +2,7 @@
 scripts/
 
 # Ignore specific notebook files
-Model_training.ipynb
+model_training.ipynb
 breast-cancer-prediction-eda-ml-pipeline.ipynb
 
 # Optional: Ignore any other notebook files globally
